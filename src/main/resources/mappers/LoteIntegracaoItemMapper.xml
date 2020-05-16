@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.LoteIntegracaoItemMapper">
+
+    <insert id="insertLoteIntegracaoItem">
+        insert into controladoria.ctl05a_lote_integracao_item (
+         ctl05a_id
+        ,ctl05a_id_filial
+        ,ctl05a_id_empresa
+        ,ctl05a_serie
+        ,ctl05a_dt
+        ,ctl05a_dt_movimento
+        ,ctl05a_tip_oper
+        ,ctl05a_valor
+        ,ctl05a_id_tipo_integrador
+        ,ctl05a_id_modulo
+        ,ctl05a_id_revisao
+        )
+        values
+        <foreach item="item" collection="lotes" separator=",">
+         (
+             #{item.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.filial.id}
+            ,#{item.empresa.id}
+            ,#{item.serie}
+            ,now()
+            ,#{item.dataMovimento}
+            ,#{item.tipoOperacao, jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.TipoOperacaoTypeHandler}
+            ,#{item.valor}
+            ,#{item.tipoIntegrador.id}
+            ,#{item.modulo.id}
+            ,#{item.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+        )
+        </foreach>
+    </insert>
+
+</mapper>

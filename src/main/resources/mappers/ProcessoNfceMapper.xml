@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.ProcessoNfceMapper">
+
+    <resultMap id="mapRecuperar" type="br.com.ithappens.controladoria.model.LoteIntegracaoItem">
+        <result column="datamovimento" property="dataMovimento" />
+        <result column="idfilial" property="filial.id"/>
+        <result column="idintegrador" property="tipoIntegrador.id"/>
+        <result column="idmodulo" property="modulo.id"/>
+        <result column="serie" property="serie" />
+        <result column="tipoper" property="tipoOperacao" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.TipoOperacaoTypeHandler" />
+        <result column="valor" property="valor" />
+    </resultMap>
+    
+    <select id="recuperarFiscal" resultMap="mapRecuperar">
+         select
+              '2020-6-1'::date as datamovimento
+              ,7 as idfilial
+              ,2 as idintegrador --Processo Nfce
+              ,2 as idmodulo --FISCAL
+              ,'311' as serie
+              ,2 as tipoper --Saída
+              ,1050.84 as valor
+    </select>
+
+    <select id="recuperarEstoque" resultMap="mapRecuperar">
+         select
+              '2020-6-1'::date as datamovimento
+              ,7 as idfilial
+              ,2 as idintegrador --Processo Nfce
+              ,3 as idmodulo --FISCAL
+              ,'311' as serie
+              ,2 as tipoper --Saída
+              ,1050.84 as valor
+    </select>
+
+    <select id="recuperarFinanceiro" resultMap="mapRecuperar">
+         select
+              '2020-6-1' as datamovimento
+              ,7 as idfilial
+              ,2 as idintegrador --Processo Nfce
+              ,4 as idmodulo --FISCAL
+              ,'311' as serie
+              ,2 as tipoper --Saída
+              ,1050.84 as valor
+    </select>
+</mapper>

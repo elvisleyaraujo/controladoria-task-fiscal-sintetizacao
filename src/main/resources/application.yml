@@ -1,3 +1,7 @@
+logging:
+  level:
+    br.com.ithappens.controladoria.mapper: DEBUG
+
 spring:
   profiles:
     active: dev

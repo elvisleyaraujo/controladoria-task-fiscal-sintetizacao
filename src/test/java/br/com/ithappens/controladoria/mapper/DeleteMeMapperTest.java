@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 public class DeleteMeMapperTest {
 
   @Autowired
-  private DeleteMeMapper deleteMeMapper;
+  //private DeleteMeMapper deleteMeMapper;
 
   @Test
   public void recuperar() {

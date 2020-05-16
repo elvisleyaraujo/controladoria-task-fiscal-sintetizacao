@@ -13,10 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TipoIntegrador {
 
-    private Long cd18_id;
-    private String cd18_desc;
-    private String cd18_sigla;
-    private ModuloIntegrador cd18_id_modulo_padrao;
-    private UUID cd18_uuid_chave;
+    private Long id;
+    private String descricao;
+    private String sigla;
+    private Modulo moduloPadrao;
+    private UUID uuidchave;
 
 }

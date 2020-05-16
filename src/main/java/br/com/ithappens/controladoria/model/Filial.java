@@ -8,12 +8,12 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "cd00b_id")
+@EqualsAndHashCode(of = "id")
 public class Filial {
 
-    private Long cd00b_id;
-    private Long cd00b_numero;
-    private Empresa cd00b_id_empresa;
-    private String cd00b_razao_social;
+    private Long id;
+    private Long numero;
+    private Empresa empresa;
+    private String razaoSocial;
 
 }

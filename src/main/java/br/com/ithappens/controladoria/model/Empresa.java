@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(of = "cd01_id")
+@EqualsAndHashCode(of = "id")
 public class Empresa {
 
-    private Long cd01_id;
-    private LocalDateTime cd01_dt;
-    private Long cd01_cnpj_raiz;
-    private Long cd01_numero;
-    private Boolean cd01_ativo;
-    private Long cd01_id_grupo_operacao;
+    private Long id;
+    private LocalDateTime dataModificacao;
+    private Long cnpjRaiz;
+    private Long numero;
+    private Boolean ativo;
+    private Long idGrupoOperacao;
 
 }

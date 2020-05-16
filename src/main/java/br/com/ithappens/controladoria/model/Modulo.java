@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "cd11_id")
-public class ModuloIntegrador {
+@EqualsAndHashCode(of = "id")
+public class Modulo {
 
-    private Long cd11_id;
-    private String cd11_desc;
-    private Boolean cd11_ativo;
+    private Long id;
+    private String descricao;
+    private Boolean ativo;
 
 }
