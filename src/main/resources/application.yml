@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: dev
+---
+spring:
+  profiles: prod
+app:
+  datasource:
+    jdbcUrl: jdbc:postgresql://10.0.1.15:5432/contabil
+    username: gmcont
+    password: BmQev2UYvkOj
+    driverClassName: org.postgresql.Driver
+ithappens:
+  ittask:
+    contexto: producao
+---
+# Coloque aqui suas configurações de Desenvolvimento
+spring:
+  profiles: dev
+app:
+  datasource:
+    jdbcUrl: jdbc:postgresql://10.0.1.15:5432/contabil
+    username: gmcont
+    password: BmQev2UYvkOj
+    driverClassName: org.postgresql.Driver
+ithappens:
+  ittask:
+    contexto: desenvolvimento
