@@ -1,17 +1,21 @@
 package br.com.ithappens.controladoria.service;
 
-import br.com.ithappens.controladoria.mapper.LoteIntegracaoItemMapper;
-import br.com.ithappens.controladoria.mapper.ProcessoNfceMapper;
-import br.com.ithappens.controladoria.model.Empresa;
+import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
+import br.com.ithappens.controladoria.mapper.postgresql.LoteIntegracaoItemMapper;
+import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
+import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -19,30 +23,39 @@ import java.util.UUID;
 public class ProcessoNfceService {
 
     @Autowired
-    ProcessoNfceMapper processoNfceMapper;
+    private ProcessoNfceMapper processoNfceMapper;
     @Autowired
-    LoteIntegracaoItemMapper loteIntegracaoItemMapper;
+    private FilialMapper filialMapper;
+    @Autowired
+    private LoteIntegracaoItemMapper loteIntegracaoItemMapper;
 
-    public boolean importaNfceFiscal(){
-        log.info("RECUPERANDO PROCESSO:NFCE MODULO:FISCAL");
-
-        List<LoteIntegracaoItem> lote = null;
-
-        try {
-            lote = processoNfceMapper.recuperarFiscal(7L, LocalDate.now());
-
-            lote.forEach(p -> {
-                Empresa empresa = new Empresa();
-                empresa.setId(p.getFilial().getId());
-                p.setEmpresa(empresa);
-                p.setId(UUID.randomUUID());
-            }); }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
-        return loteIntegracaoItemMapper.insertLoteIntegracaoItem(lote);
+    public void importaNfceFiscal(){
+        log.info("INICIO: RECUPERANDO PROCESSO:NFCE MODULO:FISCAL");
+        List<Filial> filiaisList = filialMapper.recuperarFilial("2", "7");
+        LocalDate dataMovimento = LocalDate.of(2020,05,02);
+        List<CompletableFuture<Void>> executions = new ArrayList<>();
+        filiaisList.parallelStream().forEach( filial -> { executions.add(findAndSaveFiscal(filial, dataMovimento));});
+        executions.forEach(CompletableFuture::join);
+        log.info("FIM: RECUPERANDO PROCESSO:NFCE MODULO:FISCAL");
     };
+
+    @Async
+    public CompletableFuture<Void> findAndSaveFiscal(Filial filial, LocalDate dataMovimento) {
+        List<LoteIntegracaoItem> lote = processoNfceMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
+        lote.forEach(x -> {
+            x.setEmpresa(filial.getEmpresa());
+            x.setFilial(filial);
+            x.setId(UUID.randomUUID());
+        });
+
+        //TODO INSERÇÃO DE MUITAS INFORMAÇÕES
+        if (!lote.isEmpty()) {
+           loteIntegracaoItemMapper.insertLoteIntegracaoItem(lote);
+        };
+
+        return CompletableFuture.completedFuture(null);
+    };
+
 
     public boolean importaNfceFinanceiro(){
         log.info("IMPORTAÇÃO FINANCEIRO A SER IMPLEMENTADO");

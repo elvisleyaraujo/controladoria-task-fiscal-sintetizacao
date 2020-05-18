@@ -9,35 +9,15 @@ import org.springframework.cloud.task.repository.TaskExecution;
 
 @Task(name = "fiscal-processo-nfce",
       description="Importação dos dados do processo de Nfc-e")
-public class ProcessoNFce implements ITask {
+public class ProcessoNFceTask implements ITask {
 
     @Autowired
-    ProcessoNfceService processoNfceService;
+    private ProcessoNfceService processoNfceService;
 
     @Override
     public void run(Arguments args) {
 
         processoNfceService.importaNfceFiscal();
-
-    }
-
-    @Override
-    public void beforeTask(TaskExecution taskExecution) {
-
-    }
-
-    @Override
-    public void afterTask(TaskExecution taskExecution) {
-
-    }
-
-    @Override
-    public void taskFail(TaskExecution taskExecution, Throwable cause) {
-
-    }
-
-    @Override
-    public void ruleFailure(Throwable cause) {
 
     }
 

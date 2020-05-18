@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode( of = "cd18_id")
+@EqualsAndHashCode( of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 public class TipoIntegrador {

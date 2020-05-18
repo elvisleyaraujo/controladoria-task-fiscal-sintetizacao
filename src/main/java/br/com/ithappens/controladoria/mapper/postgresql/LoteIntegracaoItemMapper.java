@@ -1,4 +1,4 @@
-package br.com.ithappens.controladoria.mapper;
+package br.com.ithappens.controladoria.mapper.postgresql;
 
 import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
 import org.apache.ibatis.annotations.Mapper;

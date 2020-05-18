@@ -11,13 +11,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode (of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode (of = "id")
 public class LoteIntegracaoItem {
 
     private UUID id;
-    private UUID idLote;
     private Filial filial;
     private Empresa empresa;
     private String serie;

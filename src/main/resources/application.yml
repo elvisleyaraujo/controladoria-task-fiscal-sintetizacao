@@ -10,10 +10,15 @@ spring:
   profiles: prod
 app:
   datasource:
-    jdbcUrl: jdbc:postgresql://10.0.1.15:5432/contabil
-    username: gmcont
-    password: BmQev2UYvkOj
-    driverClassName: org.postgresql.Driver
+    postgresql:
+      jdbcUrl: jdbc:postgresql://10.0.1.15:5432/contabil
+      username: gmcont
+      password: BmQev2UYvkOj
+      driverClassName: org.postgresql.Driver
+    sqlserver:
+      jdbcUrl: jdbc:sqlserver://10.54.0.253:1433;database=CADASTRO
+      username: gmcore
+      password: ipase2013!
 ithappens:
   ittask:
     contexto: producao
@@ -23,10 +28,15 @@ spring:
   profiles: dev
 app:
   datasource:
-    jdbcUrl: jdbc:postgresql://10.0.1.15:5432/contabil
-    username: gmcont
-    password: BmQev2UYvkOj
-    driverClassName: org.postgresql.Driver
+    postgresql:
+      jdbcUrl: jdbc:postgresql://10.0.1.15:5432/contabil
+      username: gmcont
+      password: BmQev2UYvkOj
+      driverClassName: org.postgresql.Driver
+    sqlserver:
+      jdbcUrl: jdbc:sqlserver://192.168.6.3:1433;database=CADASTRO
+      username: gmcore
+      password: ipase2013!
 ithappens:
   ittask:
     contexto: desenvolvimento

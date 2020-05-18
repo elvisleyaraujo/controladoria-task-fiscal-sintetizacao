@@ -1,19 +1,17 @@
 package br.com.ithappens.controladoria.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Filial {
 
-    private Long id;
-    private Long numero;
+    private UUID id;
+    private String codigo;
     private Empresa empresa;
-    private String razaoSocial;
+    private Boolean ativo;
 
 }

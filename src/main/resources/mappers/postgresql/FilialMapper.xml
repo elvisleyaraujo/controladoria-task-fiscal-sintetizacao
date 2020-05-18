@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.postgresql.FilialMapper">
+
+    <resultMap id="mapFilial" type="br.com.ithappens.controladoria.model.Filial">
+        <id column="ca000b_id" property="id" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler" />
+        <result column="ca000b_codigo" property="codigo"/>
+        <result column="ca000b_ativo" property="ativo"/>
+        <result column="ca000b_id_empresa" property="empresa.id" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="ca000a_codigo" property="empresa.codigo" />
+        <result column="ca000a_nome" property="empresa.nome" />
+        <result column="ca000a_cnpj_raiz" property="empresa.cnpjRaiz"/>
+        <result column="ca000a_ativo" property="empresa.ativo"/>
+    </resultMap>
+
+    <select id="recuperarFilial" resultMap="mapFilial">
+        select
+              ca000b_id,
+              ca000b_codigo,
+              ca000b_id_empresa,
+              ca000b_ativo,
+        	  ca000a_codigo,
+        	  ca000a_nome,
+        	  ca000a_cnpj_raiz,
+        	  ca000a_ativo
+        from catalogo.ca000b_filial f
+        inner join catalogo.ca000a_empresa e on f.ca000b_id_empresa = e.ca000a_id
+        where ca000b_ativo = true
+        <if test="codigoEmpresa != ''">
+            and ca000a_codigo = #{codigoEmpresa}
+        </if>
+        <if test="codigoFilial != ''">
+            and ca000b_codigo = #{codigoFilial}
+        </if>
+        order by cast(ca000b_codigo as int)
+    </select>
+
+</mapper>

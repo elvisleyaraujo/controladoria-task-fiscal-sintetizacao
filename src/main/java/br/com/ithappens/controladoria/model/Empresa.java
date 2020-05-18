@@ -5,17 +5,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Empresa {
 
-    private Long id;
-    private LocalDateTime dataModificacao;
-    private Long cnpjRaiz;
-    private Long numero;
+    private UUID id;
+    private String codigo;
+    private String nome;
+    private String cnpjRaiz;
+    private Filial matriz;
     private Boolean ativo;
-    private Long idGrupoOperacao;
 
 }
