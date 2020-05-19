@@ -1,12 +1,9 @@
-package br.com.ithappens.controladoria.service.procnfce;
+package br.com.ithappens.controladoria.service.nfce;
 
-import br.com.ithappens.controladoria.mapper.postgresql.LoteIntegracaoItemMapper;
-import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
-import br.com.ithappens.controladoria.service.IProcessoImportacao;
+import br.com.ithappens.controladoria.service.ProcessoImportacao;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +14,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-public class ImportarFiscal implements IProcessoImportacao {
-
-    private ProcessoNfceMapper processoNfceMapper;
-    private LoteIntegracaoItemMapper loteIntegracaoItemMapper;
-
-    public ImportarFiscal(ProcessoNfceMapper processoNfceMapper, LoteIntegracaoItemMapper loteIntegracaoItemMapper){
-        this.processoNfceMapper = processoNfceMapper;
-        this.loteIntegracaoItemMapper= loteIntegracaoItemMapper;
-    }
-    @Override
-    public void importar(List<Filial> filiaisList, LocalDate dataMovimento) {
-        log.info("INICIO: RECUPERANDO PROCESSO:NFCE MODULO:FISCAL");
-        List<CompletableFuture<Boolean>> executions = new ArrayList<>();
-        filiaisList.parallelStream().forEach( filial -> { executions.add(findAndSave(filial, dataMovimento));});
-        executions.forEach(CompletableFuture::join);
-        log.info("FIM: RECUPERANDO PROCESSO:NFCE MODULO:FISCAL");
-    }
+@Service
+public class NfceImportacaoFiscal extends ProcessoImportacao {
 
     @Override
     @Async("executorControladoriaFiscalTaskBean")

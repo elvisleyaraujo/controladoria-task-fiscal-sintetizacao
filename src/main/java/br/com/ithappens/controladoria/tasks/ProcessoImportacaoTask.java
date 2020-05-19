@@ -1,6 +1,6 @@
 package br.com.ithappens.controladoria.tasks;
 
-import br.com.ithappens.controladoria.service.procnfce.ProcessoNfceService;
+import br.com.ithappens.controladoria.service.nfce.ProcessoNfceService;
 import br.com.ithappens.lib.task.annotation.Task;
 import br.com.ithappens.lib.task.model.Arguments;
 import br.com.ithappens.lib.task.service.task.ITask;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Task(name = "fiscal-processo-nfce",
       description="Importação dos dados do processo de Nfc-e")
-public class ProcessoNFceTask implements ITask {
+public class ProcessoImportacaoTask implements ITask {
 
     @Autowired
     private ProcessoNfceService processoNfceService;
@@ -21,9 +21,10 @@ public class ProcessoNFceTask implements ITask {
         LocalDate dataMovimento = LocalDate.of(2020,05,02);
 
         //PROCESSO DE NFC-E
-        processoNfceService.importar("","", dataMovimento);
-        //PROCESSO DE NFE
+        processoNfceService.importAndSave("2","", dataMovimento);
 
+        //PROCESSO DE NFE
+        
     }
 
 }
