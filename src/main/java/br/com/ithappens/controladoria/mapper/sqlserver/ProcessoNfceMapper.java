@@ -15,9 +15,9 @@ public interface ProcessoNfceMapper {
     List<LoteIntegracaoItem> recuperarFiscal(@Param("codigoFilial") String codigoFilial,
                                              @Param("datamovimento") LocalDate datamovimento);
 
-    List<LoteIntegracaoItem> recuperarEstoque(@Param("codigoFilial") Long codigoFilial,
+    List<LoteIntegracaoItem> recuperarEstoque(@Param("codigoFilial") String codigoFilial,
                                               @Param("datamovimento") LocalDate datamovimento);
 
-    List<LoteIntegracaoItem> recuperarFinanceiro(@Param("codigoFilial") Long codigoFilial,
+    List<LoteIntegracaoItem> recuperarFinanceiro(@Param("codigoFilial") String codigoFilial,
                                                  @Param("datamovimento") LocalDate datamovimento);
 }

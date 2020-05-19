@@ -16,12 +16,10 @@
 
     <select id="recuperarFiscal" resultMap="mapRecuperar">
         select
-           top 150
            ct10_id_filial                                   as idfilial,
            try_convert(date,ct10_dt_emissao)                as datamovimento,
            try_convert(varchar, ct10_serie_documento)       as serie,
-           case ct10_tipo_operacao when 0 then 1 else 2 end as tipoper,
-           ct10_modelo_documento                            as modelo,
+           02                                               as tipoper,
            02                                               as idintegrador, --Processo Nfce
            02                                               as idmodulo,     --FISCAL
            sum(ct11_valor_total_produto
@@ -39,32 +37,37 @@
           and convert(date,ct10_dt_emissao) = #{datamovimento}
           and ct10_status in (2)
           and ct10_tipo_operacao>0
+          and ct10_modelo_documento = '65'
         group by ct10_id_filial,
                  ct10_serie_documento,
-                 ct10_tipo_operacao,
                  ct10_modelo_documento,
-                 ct10_dt_emissao;
+                 try_convert(date,ct10_dt_emissao) ;
     </select>
 
     <select id="recuperarEstoque" resultMap="mapRecuperar">
          select
-              '2020-6-1'::date as datamovimento
-              ,7 as idfilial
-              ,2 as idintegrador --Processo Nfce
-              ,3 as idmodulo --FISCAL
-              ,'311' as serie
-              ,2 as tipoper --Saída
-              ,1050.84 as valor
+               es12_filial                     as idfilial
+              ,convert(date, es12_dt_contabil) as datamovimento
+              ,vd38_pdv                        as serie
+              ,2                               as tipoper      --Saída
+              ,2                               as idintegrador --Processo Nfce
+              ,3                               as idmodulo     --ESTOQUE
+              ,sum(es12_valor_total)           as valor
+        from estoque..es12_pedido with (nolock)
+        inner join vendas..vd38_cupom with (nolock) on es12_id_cupom = vd38_id
+        inner join cadastro..cd62_estoque_movimento with (nolock) on es12_tipo_movimento = cd62_id
+        where es12_filial not in (439, 436, 400)
+          and es12_filial = #{codigoFilial}
+          and convert(date, es12_dt_contabil) = #{datamovimento}
+          and cd62_cupom_ecf = 1
+          and cd62_id_categoria in (5,14)
+          and es12_id_status in (5,6,8)
+          and vd38_cancelado = 0
+          and es12_dt_movimentacao is not null
+        group by vd38_pdv,
+                 convert(date, es12_dt_contabil) ,
+                 es12_filial
     </select>
 
-    <select id="recuperarFinanceiro" resultMap="mapRecuperar">
-         select
-              '2020-6-1' as datamovimento
-              ,7 as idfilial
-              ,2 as idintegrador --Processo Nfce
-              ,4 as idmodulo --FISCAL
-              ,'311' as serie
-              ,2 as tipoper --Saída
-              ,1050.84 as valor
-    </select>
+
 </mapper>

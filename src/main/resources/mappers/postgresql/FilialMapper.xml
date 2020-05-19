@@ -27,13 +27,14 @@
         from catalogo.ca000b_filial f
         inner join catalogo.ca000a_empresa e on f.ca000b_id_empresa = e.ca000a_id
         where ca000b_ativo = true
+          and ca000a_id_grupo_empresarial  = 'b072a26b-494c-48b1-93d0-83468b8035c0' --GRUPO MATEUS
         <if test="codigoEmpresa != ''">
             and ca000a_codigo = #{codigoEmpresa}
         </if>
         <if test="codigoFilial != ''">
             and ca000b_codigo = #{codigoFilial}
         </if>
-        order by cast(ca000b_codigo as int)
+--        order by cast(ca000b_codigo as int)
     </select>
 
 </mapper>

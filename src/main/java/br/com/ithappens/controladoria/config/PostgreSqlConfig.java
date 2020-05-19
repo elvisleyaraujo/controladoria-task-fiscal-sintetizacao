@@ -15,6 +15,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -31,6 +32,18 @@ public class PostgreSqlConfig implements IDBConfig {
   private ResourceLoader resourceLoader;
   @Value("${mybatis.type-handlers-package}")
   private String typeHandlerLocation;
+
+  @Bean("executorControladoriaFiscalTaskBean")
+  @Primary
+  public ThreadPoolTaskExecutor threadPoolTaskExecutorBean() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(10);
+    executor.setMaxPoolSize(12);
+    executor.setThreadNamePrefix("controladoria-task-fiscal");
+    executor.setWaitForTasksToCompleteOnShutdown(true);
+    executor.initialize();
+    return executor;
+  }
 
   @Primary
   @Bean(name = DATASOURCE_POSTGRESQL)

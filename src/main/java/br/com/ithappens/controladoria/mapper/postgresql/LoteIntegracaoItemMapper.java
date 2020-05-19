@@ -11,6 +11,6 @@ import java.util.List;
 @Mapper
 public interface LoteIntegracaoItemMapper {
 
-    Boolean insertLoteIntegracaoItem(@Param("lotes") List<LoteIntegracaoItem> lotes);
+    Boolean insertLoteIntegracaoItem(@Param("loteLst") List<LoteIntegracaoItem> loteLst);
 
 }

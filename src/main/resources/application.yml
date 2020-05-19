@@ -1,6 +1,6 @@
-logging:
-  level:
-    br.com.ithappens.controladoria.mapper: DEBUG
+#logging:
+#  level:
+#    br.com.ithappens.controladoria.mapper: DEBUG
 
 spring:
   profiles:
