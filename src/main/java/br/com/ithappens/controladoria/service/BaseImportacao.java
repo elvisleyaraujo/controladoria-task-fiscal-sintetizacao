@@ -11,16 +11,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
-public class ProcessoImportacao {
+public class BaseImportacao {
 
     @Autowired
     public ProcessoNfceMapper processoNfceMapper;
     @Autowired
     public LoteIntegracaoItemMapper loteIntegracaoItemMapper;
 
-    public void importar(List<Filial> filiaisList, LocalDate dataMovimento){
+    public void importar(List<Filial> filiaisList, LocalDate dataMovimento) {
         List<CompletableFuture<Boolean>> executions = new ArrayList<>();
         filiaisList.parallelStream().forEach( filial -> { executions.add(findAndSave(filial, dataMovimento));});
         executions.forEach(CompletableFuture::join);

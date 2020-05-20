@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode(of = "cd18a_uuid")
+@EqualsAndHashCode(of = "uuid")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConfiguracaoIntegrador {

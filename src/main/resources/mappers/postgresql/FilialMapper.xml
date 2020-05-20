@@ -34,7 +34,7 @@
         <if test="codigoFilial != ''">
             and ca000b_codigo = #{codigoFilial}
         </if>
---        order by cast(ca000b_codigo as int)
+        order by cast(ca000b_codigo as int)
     </select>
 
 </mapper>
