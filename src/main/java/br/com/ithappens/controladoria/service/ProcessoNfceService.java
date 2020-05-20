@@ -4,6 +4,7 @@ import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
 import br.com.ithappens.controladoria.service.BaseImportacao;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -29,7 +30,6 @@ public class ProcessoNfceService extends BaseImportacao {
     }
 
     public CompletableFuture<Boolean> findAndSave(Filial filial, LocalDate dataMovimento){
-
         importacaoEstoque(filial, dataMovimento);
         importacaoFiscal(filial, dataMovimento);
         //importacaoFinanceiro(filial, dataMovimento);
@@ -49,8 +49,12 @@ public class ProcessoNfceService extends BaseImportacao {
             loteItem.setId(UUID.randomUUID());
         });
 
-        if (saveInBatch(loteLst)) RETURN = CompletableFuture.completedFuture(true);
-
+        if (!loteLst.isEmpty()) {
+            if (loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst))
+                RETURN = CompletableFuture.completedFuture(true);
+        } else {
+            RETURN = CompletableFuture.completedFuture(false);
+        }
         log.info("FILIAL " + filial.getCodigo() + " PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: " + loteLst.size());
 
         return RETURN;
@@ -67,7 +71,12 @@ public class ProcessoNfceService extends BaseImportacao {
             loteItem.setId(UUID.randomUUID());
         });
 
-        if (saveInBatch(loteLst)) RETURN = CompletableFuture.completedFuture(true);
+        if (!loteLst.isEmpty()) {
+            if (loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst))
+                RETURN = CompletableFuture.completedFuture(true);
+        } else {
+            RETURN = CompletableFuture.completedFuture(false);
+        }
 
         log.info("FILIAL " + filial.getCodigo() + " PROCESSO NFCE: MODULO FISCAL-ATUALIZADO: " + loteLst.size());
 
@@ -85,33 +94,5 @@ public class ProcessoNfceService extends BaseImportacao {
         CompletableFuture<Boolean> RETURN = CompletableFuture.completedFuture(false);
         return RETURN;
     }
-
-    public boolean saveInBatch(List<LoteIntegracaoItem> loteLst){
-        try {
-            if (!loteLst.isEmpty()) {
-                List<LoteIntegracaoItem> tmpLote = new ArrayList<LoteIntegracaoItem>();
-
-                int qtdMax=999;
-                int qtdIns=000;
-                for (int x=00; x<loteLst.size(); x++){
-                    tmpLote.add(loteLst.get(x));
-                    qtdIns++;
-
-                    if ( (qtdIns>=qtdMax) || (x==loteLst.size()-1) ) {
-                        loteIntegracaoItemMapper.insertLoteIntegracaoItem(tmpLote);
-                        tmpLote.clear();
-                        qtdIns=00;
-                    }
-                }
-            }
-        } catch (Exception e){
-            log.error("IMPORTAÇÃO NFCE MODULO FISCAL- ERRO AO PROCESSAR ");
-            log.info(e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
 
 }

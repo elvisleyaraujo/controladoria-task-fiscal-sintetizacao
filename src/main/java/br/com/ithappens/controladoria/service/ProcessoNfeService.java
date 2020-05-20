@@ -10,13 +10,14 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class ProcessoNfeService {
+public class ProcessoNfeService extends BaseImportacao {
 
     @Autowired
     private FilialMapper filialMapper;
 
     public void importAndSave(String codigoEmpresa, String codigoFilial, LocalDate dataMovimento){
         List<Filial> filialList = filialMapper.recuperarFilial(codigoEmpresa, codigoFilial);
+
 
     }
 
