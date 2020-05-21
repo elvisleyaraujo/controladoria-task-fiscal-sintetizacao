@@ -1,68 +1,58 @@
 package br.com.ithappens.controladoria.service;
 
 import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
+import br.com.ithappens.controladoria.mapper.postgresql.LoteIntegracaoItemMapper;
+import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
-import br.com.ithappens.controladoria.service.BaseImportacao;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
 public class ProcessoNfceService extends BaseImportacao {
 
     @Autowired
-    private FilialMapper filialMapper;
+    private ProcessoNfceMapper processoNfceMapper;
+    @Autowired
+    private LoteIntegracaoItemMapper loteIntegracaoItemMapper;
 
-    public void importAndSave(String codigoEmpresa, String codigoFilial, LocalDate dataMovimento){
-        List<Filial> filialList = filialMapper.recuperarFilial(codigoEmpresa, codigoFilial);
-        super.importar(filialList, dataMovimento);
-    }
-
-    public CompletableFuture<Boolean> findAndSave(Filial filial, LocalDate dataMovimento){
+    @Async
+    @Override
+    public CompletableFuture<Void> findAndSave(Filial filial, LocalDate dataMovimento){
         importacaoEstoque(filial, dataMovimento);
         importacaoFiscal(filial, dataMovimento);
         //importacaoFinanceiro(filial, dataMovimento);
         //importacaoPDV(filial, dataMovimento);
 
-        return CompletableFuture.completedFuture(true);
+        return CompletableFuture.completedFuture(null);
     };
 
-    @Async
-    public CompletableFuture<Boolean> importacaoEstoque(Filial filial, LocalDate dataMovimento){
-        CompletableFuture<Boolean> RETURN = CompletableFuture.completedFuture(false);
+    //@Async
+    public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
+        boolean RETURN = false;
 
-        List<LoteIntegracaoItem> loteLst = processoNfceMapper.recuperarEstoque(filial.getCodigo(), dataMovimento);
-        loteLst.forEach(loteItem -> {
-            loteItem.setEmpresa(filial.getEmpresa());
-            loteItem.setFilial(filial);
-            loteItem.setId(UUID.randomUUID());
-        });
+        List<LoteIntegracaoItem> loteLst = recuperarEstoque(filial, dataMovimento);
 
         if (!loteLst.isEmpty()) {
-            if (loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst))
-                RETURN = CompletableFuture.completedFuture(true);
-        } else {
-            RETURN = CompletableFuture.completedFuture(false);
+            RETURN = loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst);
         }
-        log.info("FILIAL " + filial.getCodigo() + " PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: " + loteLst.size());
+
+        log.info("FILIAL {} DATA: {} PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: {}", filial.getCodigo(), dataMovimento,loteLst.size());
 
         return RETURN;
     }
 
-    @Async
-    public CompletableFuture<Boolean> importacaoFiscal(Filial filial, LocalDate dataMovimento){
-        CompletableFuture<Boolean> RETURN = CompletableFuture.completedFuture(false);
+    //@Async
+    public boolean importacaoFiscal(Filial filial, LocalDate dataMovimento){
+        boolean RETURN = false;
 
         List<LoteIntegracaoItem> loteLst = processoNfceMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
         loteLst.forEach(loteItem -> {
@@ -72,27 +62,44 @@ public class ProcessoNfceService extends BaseImportacao {
         });
 
         if (!loteLst.isEmpty()) {
-            if (loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst))
-                RETURN = CompletableFuture.completedFuture(true);
-        } else {
-            RETURN = CompletableFuture.completedFuture(false);
+            RETURN = loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst);
         }
 
-        log.info("FILIAL " + filial.getCodigo() + " PROCESSO NFCE: MODULO FISCAL-ATUALIZADO: " + loteLst.size());
+        log.info("FILIAL {} DATA: {} PROCESSO NFCE: MODULO FISCAL-ATUALIZADO: {}", filial.getCodigo(), dataMovimento,loteLst.size());
 
         return RETURN;
     }
 
-    @Async
-    public CompletableFuture<Boolean> importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
-        CompletableFuture<Boolean> RETURN = CompletableFuture.completedFuture(false);
-        return RETURN;
+    //@Async
+    public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
+        return false;
     }
 
-    @Async
-    public CompletableFuture<Boolean> importacaoPDV(Filial filial, LocalDate dataMovimento){
-        CompletableFuture<Boolean> RETURN = CompletableFuture.completedFuture(false);
-        return RETURN;
+    //@Async
+    public boolean importacaoPDV(Filial filial, LocalDate dataMovimento){
+        return false;
+    }
+
+    public List<LoteIntegracaoItem> recuperarEstoque(Filial filial, LocalDate dataMovimento){
+        List<LoteIntegracaoItem> loteLst = processoNfceMapper.recuperarEstoque(filial.getCodigo(), dataMovimento);
+        loteLst.forEach(loteItem -> {
+            loteItem.setEmpresa(filial.getEmpresa());
+            loteItem.setFilial(filial);
+            loteItem.setId(UUID.randomUUID());
+        });
+
+        return loteLst;
+    }
+
+    public List<LoteIntegracaoItem> recuperarFiscal(Filial filial, LocalDate dataMovimento){
+        List<LoteIntegracaoItem> loteLst = processoNfceMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
+        loteLst.forEach(loteItem -> {
+            loteItem.setEmpresa(filial.getEmpresa());
+            loteItem.setFilial(filial);
+            loteItem.setId(UUID.randomUUID());
+        });
+
+        return loteLst;
     }
 
 }

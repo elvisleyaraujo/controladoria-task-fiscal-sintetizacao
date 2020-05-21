@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper">
+
+    <resultMap id="mapRecuperar" type="br.com.ithappens.controladoria.model.LoteIntegracaoItem">
+        <result column="datamovimento" property="dataMovimento" />
+        <result column="idfilial" property="filial.codigo"  />
+        <result column="idintegrador" property="tipoIntegrador.id"/>
+        <result column="idmodulo" property="modulo.id"/>
+        <result column="serie" property="serie" />
+        <result column="tipoper" property="tipoOperacao" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.TipoOperacaoTypeHandler" />
+        <result column="valor" property="valor" />
+    </resultMap>
+
+
+    <select id="recuperarFiscal" resultMap="mapRecuperar">
+        select
+           ct10_id_filial                                   as idfilial,
+           try_convert(date,ct10_dt_emissao)                as datamovimento,
+           try_convert(varchar, ct10_serie_documento)       as serie,
+           02                                               as tipoper,
+           01                                               as idintegrador, --Processo Nfe
+           02                                               as idmodulo,     --FISCAL
+           sum(ct11_valor_total_produto
+               + isnull (ct11_valor_icmsst, 0)
+               + isnull(ct11_valor_total_frete, 0)
+               + isnull (ct11_valor_total_seguro, 0)
+               + isnull (ct11_outras_despesas, 0)
+               + isnull (ct11_valor_ipi, 0)
+               - isnull (ct11_valor_desconto, 0)
+               - isnull(ct11_valor_icms_desonerado, 0))         as valor
+        from contabil.dbo.ct10_nota_fiscal with (nolock)
+        inner join contabil.dbo.ct11_itens_nota_fiscal with (nolock) on ct11_id_nota_fiscal = ct10_id
+        inner join contabil..ct29_cfop with (nolock) on ct11_id_cfop = ct29_classificacao
+        where ct10_id_filial = #{codigoFilial}
+          and convert(date,ct10_dt_emissao) = #{datamovimento}
+          and ct10_status in (2)
+          and ct10_tipo_operacao>0
+          and ct10_modelo_documento = '55'
+        group by ct10_id_filial,
+                 ct10_serie_documento,
+                 ct10_modelo_documento,
+                 try_convert(date,ct10_dt_emissao) ;
+    </select>
+
+
+</mapper>

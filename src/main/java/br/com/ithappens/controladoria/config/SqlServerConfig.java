@@ -1,6 +1,7 @@
 package br.com.ithappens.controladoria.config;
 
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
+import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper;
 import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperFactoryBean;
@@ -19,6 +20,7 @@ import javax.sql.DataSource;
 @Configuration
 //@MapperScan(basePackages = {"br.com.ithappens.mapper.sqlserver"}, factoryBean = MapperFactoryBean.class)
 public class SqlServerConfig implements IDBConfig {
+
   public static final String TRANSACTION_SQL_SERVER     = "transactionSqlServer";
   private static final String SESSION_FACTORY_SQL_SERVER = "sqlServerSessionFactory";
   private static final String DATASOURCE_SQL_SERVER      = "app.datasource.sqlserver";
@@ -58,6 +60,15 @@ public class SqlServerConfig implements IDBConfig {
           @Qualifier(SESSION_FACTORY_SQL_SERVER) SqlSessionFactoryBean sessionFactoryBean) throws Exception {
     MapperFactoryBean<ProcessoNfceMapper> factoryBean =
             new MapperFactoryBean(ProcessoNfceMapper.class);
+    factoryBean.setSqlSessionFactory(sessionFactoryBean.getObject());
+    return factoryBean;
+  }
+
+  @Bean
+  public MapperFactoryBean<ProcessoNfeMapper> processoNfeMapper(
+          @Qualifier(SESSION_FACTORY_SQL_SERVER) SqlSessionFactoryBean sessionFactoryBean) throws Exception {
+    MapperFactoryBean<ProcessoNfeMapper> factoryBean =
+            new MapperFactoryBean(ProcessoNfeMapper.class);
     factoryBean.setSqlSessionFactory(sessionFactoryBean.getObject());
     return factoryBean;
   }
