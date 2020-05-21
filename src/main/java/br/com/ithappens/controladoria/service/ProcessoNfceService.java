@@ -1,6 +1,5 @@
 package br.com.ithappens.controladoria.service;
 
-import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
 import br.com.ithappens.controladoria.mapper.postgresql.LoteIntegracaoItemMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
 import br.com.ithappens.controladoria.model.Filial;
@@ -45,7 +44,10 @@ public class ProcessoNfceService extends BaseImportacao {
             RETURN = loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst);
         }
 
-        log.info("FILIAL {} DATA: {} PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: {}", filial.getCodigo(), dataMovimento,loteLst.size());
+        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
+                filial.getCodigo(),
+                dataMovimento,
+                loteLst.size());
 
         return RETURN;
     }
@@ -65,7 +67,10 @@ public class ProcessoNfceService extends BaseImportacao {
             RETURN = loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst);
         }
 
-        log.info("FILIAL {} DATA: {} PROCESSO NFCE: MODULO FISCAL-ATUALIZADO: {}", filial.getCodigo(), dataMovimento,loteLst.size());
+        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFCE: MODULO FISCAL-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
+                filial.getCodigo(),
+                dataMovimento,
+                loteLst.size());
 
         return RETURN;
     }
