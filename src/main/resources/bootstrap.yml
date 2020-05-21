@@ -2,7 +2,7 @@ spring:
   main:
     web-application-type: none
   application:
-    name: controladoria-task-fiscal
+    name: controladoria-task-fiscal-sintetizacao
   output:
     ansi:
       enabled: always # Habilita OUTPUT de log colorido

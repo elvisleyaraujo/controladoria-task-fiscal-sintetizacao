@@ -1,9 +1,9 @@
-package br.com.ithappens.controladoria.service;
+package br.com.ithappens.controladoria.service.importacao;
 
-import br.com.ithappens.controladoria.mapper.postgresql.LoteIntegracaoItemMapper;
+import br.com.ithappens.controladoria.mapper.postgresql.LoteSinteticoSerieMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper;
 import br.com.ithappens.controladoria.model.Filial;
-import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
+import br.com.ithappens.controladoria.model.LoteSinteticoSerie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -21,7 +21,7 @@ public class ProcessoNfeService extends BaseImportacao {
     @Autowired
     private ProcessoNfeMapper processoNfeMapper;
     @Autowired
-    private LoteIntegracaoItemMapper loteIntegracaoItemMapper;
+    private LoteSinteticoSerieMapper loteSinteticoSerieMapper;
 
     @Async
     @Override
@@ -37,7 +37,7 @@ public class ProcessoNfeService extends BaseImportacao {
     public boolean importacaoFiscal(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
-        List<LoteIntegracaoItem> loteLst = processoNfeMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
+        List<LoteSinteticoSerie> loteLst = processoNfeMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
         loteLst.forEach(loteItem -> {
             loteItem.setEmpresa(filial.getEmpresa());
             loteItem.setFilial(filial);
@@ -45,10 +45,13 @@ public class ProcessoNfeService extends BaseImportacao {
         });
 
         if (!loteLst.isEmpty()) {
-            RETURN = loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst);
+            RETURN = loteSinteticoSerieMapper.insertLoteSinteticoSerie(loteLst);
         }
 
-        log.info("FILIAL {} DATA: {} PROCESSO NFE: MODULO FISCAL-ATUALIZADO: {}", filial.getCodigo(), dataMovimento,loteLst.size());
+        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFE: MODULO FISCAL-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
+                filial.getCodigo(),
+                dataMovimento,
+                loteLst.size());
 
         return RETURN;
     }

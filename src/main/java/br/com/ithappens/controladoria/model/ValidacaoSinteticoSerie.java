@@ -1,5 +1,6 @@
 package br.com.ithappens.controladoria.model;
 
+import br.com.ithappens.controladoria.model.enums.StatusValidacao;
 import br.com.ithappens.controladoria.model.enums.TipoOperacao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,8 +14,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode (of = "id")
-public class LoteIntegracaoItem {
+@EqualsAndHashCode(of = "id")
+public class ValidacaoSinteticoSerie {
 
     private UUID id;
     private Filial filial;
@@ -23,9 +24,6 @@ public class LoteIntegracaoItem {
     private LocalDateTime dataIntegracao;
     private LocalDate dataMovimento;
     private TipoOperacao tipoOperacao;
-    private double valor;
     private TipoIntegrador tipoIntegrador;
-    private Modulo modulo;
-    private UUID revisao;
-
+    private StatusValidacao status;
 }

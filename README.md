@@ -1,4 +1,4 @@
-controladoria-task-fiscal
+controladoria-task-fiscal-sintetizacao
 ==============
     Versão: 1.1
 

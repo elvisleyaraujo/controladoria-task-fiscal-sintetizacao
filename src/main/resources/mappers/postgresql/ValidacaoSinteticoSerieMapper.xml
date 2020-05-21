@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="br.com.ithappens.controladoria.mapper.postgresql.LoteIntegracaoItemMapper">
+<mapper namespace="br.com.ithappens.controladoria.mapper.postgresql.ValidacaoSinteticoSerieMapper">
 
-    <insert id="insertLoteIntegracaoItem">
+    <insert id="insertValidacaoSinteticoSerie">
         insert into controladoria.ctl06_integracao_fiscal (
          ctl06_id
         ,ctl06_id_filial

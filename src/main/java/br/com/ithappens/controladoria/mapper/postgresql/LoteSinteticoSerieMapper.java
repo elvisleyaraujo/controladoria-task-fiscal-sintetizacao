@@ -1,6 +1,6 @@
 package br.com.ithappens.controladoria.mapper.postgresql;
 
-import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
+import br.com.ithappens.controladoria.model.LoteSinteticoSerie;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 @Mapper
-public interface LoteIntegracaoItemMapper {
+public interface LoteSinteticoSerieMapper {
 
-    Boolean insertLoteIntegracaoItem(@Param("loteLst") List<LoteIntegracaoItem> loteLst);
+    Boolean insertLoteSinteticoSerie(@Param("loteLst") List<LoteSinteticoSerie> loteLst);
 
 }

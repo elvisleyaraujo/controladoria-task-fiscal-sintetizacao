@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>controladoria</groupId>
-    <artifactId>controladoria-task-fiscal</artifactId>
+    <artifactId>controladoria-task-fiscal-sintetizacao</artifactId>
     <version>1.1</version>
     <packaging>jar</packaging>
 

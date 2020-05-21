@@ -3,7 +3,7 @@
 
 <mapper namespace="br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper">
 
-    <resultMap id="mapRecuperar" type="br.com.ithappens.controladoria.model.LoteIntegracaoItem">
+    <resultMap id="mapRecuperar" type="br.com.ithappens.controladoria.model.LoteSinteticoSerie">
         <result column="datamovimento" property="dataMovimento" />
         <result column="idfilial" property="filial.codigo"  />
         <result column="idintegrador" property="tipoIntegrador.id"/>

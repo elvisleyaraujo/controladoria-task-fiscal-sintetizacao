@@ -1,7 +1,7 @@
 package br.com.ithappens.controladoria.tasks;
 
-import br.com.ithappens.controladoria.service.ProcessoNfceService;
-import br.com.ithappens.controladoria.service.ProcessoNfeService;
+import br.com.ithappens.controladoria.service.importacao.ProcessoNfceService;
+import br.com.ithappens.controladoria.service.importacao.ProcessoNfeService;
 import br.com.ithappens.lib.task.annotation.Task;
 import br.com.ithappens.lib.task.model.Arguments;
 import br.com.ithappens.lib.task.service.task.ITask;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Task(name = "fiscal-processo-nfce",
+@Task(name = "contr-dados-fiscais-busca",
       description="Importação dos dados do processo de Nfc-e")
 public class ImportacaoTask implements ITask {
 

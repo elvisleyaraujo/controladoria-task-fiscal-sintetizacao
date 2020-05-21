@@ -1,15 +1,16 @@
-package br.com.ithappens.controladoria.service;
+package br.com.ithappens.controladoria.service.importacao;
 
-import br.com.ithappens.controladoria.mapper.postgresql.LoteIntegracaoItemMapper;
+import br.com.ithappens.controladoria.mapper.postgresql.LoteSinteticoSerieMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
 import br.com.ithappens.controladoria.model.Filial;
-import br.com.ithappens.controladoria.model.LoteIntegracaoItem;
+import br.com.ithappens.controladoria.model.LoteSinteticoSerie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -18,10 +19,15 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class ProcessoNfceService extends BaseImportacao {
 
+    private static final int PDV=1;
+    private static final int FISCAL=2;
+    private static final int ESTOQUE=3;
+    private static final int FINANCEIRO=4;
+
     @Autowired
     private ProcessoNfceMapper processoNfceMapper;
     @Autowired
-    private LoteIntegracaoItemMapper loteIntegracaoItemMapper;
+    private LoteSinteticoSerieMapper loteSinteticoSerieMapper;
 
     @Async
     @Override
@@ -38,10 +44,10 @@ public class ProcessoNfceService extends BaseImportacao {
     public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
-        List<LoteIntegracaoItem> loteLst = recuperarEstoque(filial, dataMovimento);
+        List<LoteSinteticoSerie> loteLst = recuperar(ESTOQUE, filial, dataMovimento);
 
         if (!loteLst.isEmpty()) {
-            RETURN = loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst);
+            RETURN = loteSinteticoSerieMapper.insertLoteSinteticoSerie(loteLst);
         }
 
         log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
@@ -56,15 +62,10 @@ public class ProcessoNfceService extends BaseImportacao {
     public boolean importacaoFiscal(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
-        List<LoteIntegracaoItem> loteLst = processoNfceMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
-        loteLst.forEach(loteItem -> {
-            loteItem.setEmpresa(filial.getEmpresa());
-            loteItem.setFilial(filial);
-            loteItem.setId(UUID.randomUUID());
-        });
+        List<LoteSinteticoSerie> loteLst = recuperar(FISCAL, filial, dataMovimento);
 
         if (!loteLst.isEmpty()) {
-            RETURN = loteIntegracaoItemMapper.insertLoteIntegracaoItem(loteLst);
+            RETURN = loteSinteticoSerieMapper.insertLoteSinteticoSerie(loteLst);
         }
 
         log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFCE: MODULO FISCAL-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
@@ -85,19 +86,15 @@ public class ProcessoNfceService extends BaseImportacao {
         return false;
     }
 
-    public List<LoteIntegracaoItem> recuperarEstoque(Filial filial, LocalDate dataMovimento){
-        List<LoteIntegracaoItem> loteLst = processoNfceMapper.recuperarEstoque(filial.getCodigo(), dataMovimento);
-        loteLst.forEach(loteItem -> {
-            loteItem.setEmpresa(filial.getEmpresa());
-            loteItem.setFilial(filial);
-            loteItem.setId(UUID.randomUUID());
-        });
+    private List<LoteSinteticoSerie> recuperar(int modulo, Filial filial, LocalDate dataMovimento){
+        List<LoteSinteticoSerie> loteLst = new ArrayList<LoteSinteticoSerie>();
 
-        return loteLst;
-    }
+        if (modulo==ESTOQUE){
+            loteLst = processoNfceMapper.recuperarEstoque(filial.getCodigo(), dataMovimento);
+        } else if (modulo==FISCAL){
+            loteLst = processoNfceMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
+        }
 
-    public List<LoteIntegracaoItem> recuperarFiscal(Filial filial, LocalDate dataMovimento){
-        List<LoteIntegracaoItem> loteLst = processoNfceMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
         loteLst.forEach(loteItem -> {
             loteItem.setEmpresa(filial.getEmpresa());
             loteItem.setFilial(filial);

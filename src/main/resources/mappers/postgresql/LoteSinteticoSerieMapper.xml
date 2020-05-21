@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.postgresql.LoteSinteticoSerieMapper">
+
+    <insert id="insertLoteSinteticoSerie">
+        insert into controladoria.ctl06_integracao_fiscal (
+         ctl06_id
+        ,ctl06_id_filial
+        ,ctl06_id_empresa
+        ,ctl06_serie
+        ,ctl06_dt
+        ,ctl06_dt_movimento
+        ,ctl06_tip_oper
+        ,ctl06_valor
+        ,ctl06_id_tipo_integrador
+        ,ctl06_id_modulo
+        )
+        values
+        <foreach item="item" collection="loteLst" separator=",">
+         (
+             #{item.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.filial.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.empresa.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.serie}
+            ,now()
+            ,#{item.dataMovimento}
+            ,#{item.tipoOperacao.id}
+            ,#{item.valor}
+            ,#{item.tipoIntegrador.id}
+            ,#{item.modulo.id}
+        )
+        </foreach>
+        on conflict (ctl06_id_filial,ctl06_id_empresa,ctl06_dt_movimento,ctl06_serie,ctl06_id_tipo_integrador,ctl06_id_modulo)
+        do update set ctl06_valor = EXCLUDED.ctl06_valor ,
+                      ctl06_dt = now()
+
+    </insert>
+
+</mapper>
