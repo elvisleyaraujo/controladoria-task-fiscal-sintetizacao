@@ -1,9 +1,9 @@
 package br.com.ithappens.controladoria.service.importacao;
 
-import br.com.ithappens.controladoria.mapper.postgresql.LoteSinteticoSerieMapper;
+import br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper;
 import br.com.ithappens.controladoria.model.Filial;
-import br.com.ithappens.controladoria.model.LoteSinteticoSerie;
+import br.com.ithappens.controladoria.model.IntegracaoFiscal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -21,7 +21,7 @@ public class ProcessoNfeService extends BaseImportacao {
     @Autowired
     private ProcessoNfeMapper processoNfeMapper;
     @Autowired
-    private LoteSinteticoSerieMapper loteSinteticoSerieMapper;
+    private IntegracaoFiscalMapper integracaoFiscalMapper;
 
     @Async
     @Override
@@ -37,7 +37,7 @@ public class ProcessoNfeService extends BaseImportacao {
     public boolean importacaoFiscal(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
-        List<LoteSinteticoSerie> loteLst = processoNfeMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
+        List<IntegracaoFiscal> loteLst = processoNfeMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
         loteLst.forEach(loteItem -> {
             loteItem.setEmpresa(filial.getEmpresa());
             loteItem.setFilial(filial);
@@ -45,7 +45,7 @@ public class ProcessoNfeService extends BaseImportacao {
         });
 
         if (!loteLst.isEmpty()) {
-            RETURN = loteSinteticoSerieMapper.insertLoteSinteticoSerie(loteLst);
+            RETURN = integracaoFiscalMapper.insertIntegracaoFiscal(loteLst);
         }
 
         log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFE: MODULO FISCAL-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Task(name = "contr-dados-fiscais-busca",
+@Task(name = "integracao-dados-fiscais",
       description="Importação dos dados do processo de Nfc-e")
 public class ImportacaoTask implements ITask {
 

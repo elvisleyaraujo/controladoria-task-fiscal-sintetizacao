@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.postgresql.ConfiguracaoIntegradorMapper">
+
+    <resultMap id="mapConfiguracaoIntegrador" type="br.com.ithappens.controladoria.model.ConfiguracaoIntegrador">
+        <id column="cd18a_uuid" property="uuid" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler" />
+        <result column="cd18a_id_tipo_integrador" property="tipoIntegrador.id"/>
+        <result column="cd18a_id_modulo_integracao" property="modulo.id"/>
+    </resultMap>
+
+    <select id="recuperarConfiguracaoIntegrador" resultMap="mapConfiguracaoIntegrador">
+        select
+              cd18a_uuid,
+              cd18a_id_tipo_integrador,
+              cd18a_id_modulo_integracao
+        from cadastro.cd18a_configuracao_integrador
+        where cd18a_id_tipo_integrador = #{idTipoIntegrador}
+    </select>
+
+</mapper>

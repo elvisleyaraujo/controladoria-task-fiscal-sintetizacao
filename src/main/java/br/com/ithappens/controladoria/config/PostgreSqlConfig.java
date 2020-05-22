@@ -1,8 +1,9 @@
 package br.com.ithappens.controladoria.config;
 
+import br.com.ithappens.controladoria.mapper.postgresql.ConfiguracaoIntegradorMapper;
 import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
-import br.com.ithappens.controladoria.mapper.postgresql.LoteSinteticoSerieMapper;
-import br.com.ithappens.controladoria.mapper.postgresql.ValidacaoSinteticoSerieMapper;
+import br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper;
+import br.com.ithappens.controladoria.mapper.postgresql.ValidacaoFiscalMapper;
 import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperFactoryBean;
@@ -72,10 +73,10 @@ public class PostgreSqlConfig implements IDBConfig {
   }
 
   @Bean
-  public MapperFactoryBean<LoteSinteticoSerieMapper> loteSinteticoSerieMapper(
+  public MapperFactoryBean<IntegracaoFiscalMapper> integracaoFiscalMapper(
       @Qualifier(SESSION_FACTORY_POSTGRESQL) SqlSessionFactoryBean sessionFactoryBean) throws Exception {
-    MapperFactoryBean<LoteSinteticoSerieMapper> factoryBean =
-        new MapperFactoryBean(LoteSinteticoSerieMapper.class);
+    MapperFactoryBean<IntegracaoFiscalMapper> factoryBean =
+        new MapperFactoryBean(IntegracaoFiscalMapper.class);
     factoryBean.setSqlSessionFactory(sessionFactoryBean.getObject());
     return factoryBean;
   }
@@ -90,14 +91,22 @@ public class PostgreSqlConfig implements IDBConfig {
   }
 
   @Bean
-  public MapperFactoryBean<ValidacaoSinteticoSerieMapper> validacaoSinteticoSerieMapper(
+  public MapperFactoryBean<ValidacaoFiscalMapper> validacaoFiscalMapper(
           @Qualifier(SESSION_FACTORY_POSTGRESQL) SqlSessionFactoryBean sessionFactoryBean) throws Exception {
-    MapperFactoryBean<ValidacaoSinteticoSerieMapper> factoryBean =
-            new MapperFactoryBean(FilialMapper.class);
+    MapperFactoryBean<ValidacaoFiscalMapper> factoryBean =
+            new MapperFactoryBean(ValidacaoFiscalMapper.class);
     factoryBean.setSqlSessionFactory(sessionFactoryBean.getObject());
     return factoryBean;
   }
 
+  @Bean
+  public MapperFactoryBean<ConfiguracaoIntegradorMapper> configuracaoIntegradorMapper(
+          @Qualifier(SESSION_FACTORY_POSTGRESQL) SqlSessionFactoryBean sessionFactoryBean) throws Exception {
+    MapperFactoryBean<ConfiguracaoIntegradorMapper> factoryBean =
+            new MapperFactoryBean(ConfiguracaoIntegradorMapper.class);
+    factoryBean.setSqlSessionFactory(sessionFactoryBean.getObject());
+    return factoryBean;
+  }
 
 
 }

@@ -1,22 +1,22 @@
 package br.com.ithappens.controladoria.mapper.postgresql;
 
-import br.com.ithappens.controladoria.model.LoteSinteticoSerie;
+import br.com.ithappens.controladoria.model.IntegracaoFiscal;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @Mapper
-public interface LoteSinteticoSerieMapper {
+public interface IntegracaoFiscalMapper {
 
-    List<LoteSinteticoSerie> recuperarSinteticoSerie(@Param("codigoFilial") String codigoFilial,
+    List<IntegracaoFiscal> recuperarIntegracaoFiscal(@Param("idFilial") UUID idFilial,
                                                      @Param("dataMovimento")LocalDate dataMovimento,
                                                      @Param("idIntegrador") int idIntegrador);
 
-    Boolean insertLoteSinteticoSerie(@Param("loteLst") List<LoteSinteticoSerie> loteLst);
+    Boolean insertIntegracaoFiscal(@Param("loteLst") List<IntegracaoFiscal> loteLst);
 
 }

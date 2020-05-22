@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.postgresql.ValidacaoFiscalMapper">
+
+    <resultMap id="mapValidacaoFiscal" type="br.com.ithappens.controladoria.model.ValidacaoFiscal">
+        <id property="id" column="ctl06a_id" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler"/>
+        <result property="filial.id" column="ctl06a_id_filial" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler"/>
+        <result property="empresa.id" column="ctl06a_id_empresa" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler"/>
+        <result property="dataMovimento" column="ctl06a_dt_movimento" />
+        <result property="serie" column="ctl06a_serie" />
+        <result property="dataIntegracao" column="ctl06a_dt"/>
+        <result property="tipoOperacao" column="ctl06a_tip_oper" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.TipoOperacaoTypeHandler" />
+        <result property="tipoIntegrador.id" column="ctl06a_id_tipo_integrador" />
+    </resultMap>
+
+    <select id="recuperarValidacaoFiscal" resultMap="mapValidacaoFiscal">
+        select
+        	 ctl06a_id
+        	,ctl06a_id_filial
+        	,ctl06a_id_empresa
+        	,ctl06a_dt_movimento
+        	,ctl06a_serie
+        	,ctl06a_dt
+        	,ctl06a_tip_oper
+        	,ctl06a_id_tipo_integrador
+        from controladoria.ctl06a_validacao_fiscal
+        where ctl06a_id_filial    = #{idFilial,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+          and ctl06a_dt_movimento = #{dataMovimento}
+          and ctl06a_id_tipo_integrador  = #{idIntegrador}
+    </select>
+
+    <insert id="insertValidacaoFiscal">
+        insert into controladoria.ctl06a_validacao_fiscal (
+         ctl06a_id
+        ,ctl06a_id_filial
+        ,ctl06a_id_empresa
+        ,ctl06a_serie
+        ,ctl06a_dt
+        ,ctl06a_dt_movimento
+        ,ctl06a_tip_oper
+        ,ctl06a_id_tipo_integrador
+        ,ctl06a_status
+        )
+        values
+        <foreach item="item" collection="loteLst" separator=",">
+         (
+             #{item.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.filial.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.empresa.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.serie}
+            ,now()
+            ,#{item.dataMovimento}
+            ,#{item.tipoOperacao.id}
+            ,#{item.tipoIntegrador.id}
+            ,#{item.status.id}
+        )
+        </foreach>
+        on conflict (ctl06a_id_filial,ctl06a_id_empresa,ctl06a_dt_movimento,ctl06a_serie,ctl06a_tip_oper,ctl06a_id_tipo_integrador)
+        do update set ctl06a_status = EXCLUDED.ctl06a_status ,
+                      ctl06a_dt = now()
+
+    </insert>
+
+</mapper>

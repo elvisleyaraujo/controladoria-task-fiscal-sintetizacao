@@ -3,8 +3,8 @@ package br.com.ithappens.controladoria.model.enums;
 public enum StatusValidacao {
 
     NENHUM(0),
-    INCONSISTENTE(1),
-    CONSISTENTE(2);
+    CONSISTENTE(1),
+    INCONSISTENTE(2);
 
     private final int id;
 

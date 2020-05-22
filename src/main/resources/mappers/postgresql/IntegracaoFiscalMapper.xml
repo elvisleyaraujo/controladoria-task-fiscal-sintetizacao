@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper">
+
+    <resultMap id="mapIntegracaoFiscal" type="br.com.ithappens.controladoria.model.IntegracaoFiscal">
+        <id property="id" column="ctl06_id" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler"/>
+        <result property="filial.id" column="ctl06_id_filial" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler"/>
+        <result property="empresa.id" column="ctl06_id_empresa" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler"/>
+        <result property="dataMovimento" column="ctl06_dt_movimento" />
+        <result property="serie" column="ctl06_serie" />
+        <result property="dataIntegracao" column="ctl06_dt"/>
+        <result property="tipoOperacao" column="ctl06_tip_oper" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.TipoOperacaoTypeHandler" />
+        <result property="tipoIntegrador.id" column="ctl06_id_tipo_integrador" />
+        <result property="modulo.id" column="ctl06_id_modulo" />
+        <result property="valor" column="ctl06_valor" />
+    </resultMap>
+
+    <select id="recuperarIntegracaoFiscal" resultMap="mapIntegracaoFiscal">
+        select
+        	 ctl06_id
+        	,ctl06_id_filial
+        	,ctl06_id_empresa
+        	,ctl06_dt_movimento
+        	,ctl06_serie
+        	,ctl06_dt
+        	,ctl06_tip_oper
+        	,ctl06_id_tipo_integrador
+        	,ctl06_id_modulo
+        	,ctl06_valor
+        from controladoria.ctl06_integracao_fiscal
+        where ctl06_id_filial    = #{idFilial,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+          and ctl06_dt_movimento = #{dataMovimento}
+          and ctl06_id_tipo_integrador  = #{idIntegrador}
+    </select>
+
+    <insert id="insertIntegracaoFiscal">
+        insert into controladoria.ctl06_integracao_fiscal (
+         ctl06_id
+        ,ctl06_id_filial
+        ,ctl06_id_empresa
+        ,ctl06_serie
+        ,ctl06_dt
+        ,ctl06_dt_movimento
+        ,ctl06_tip_oper
+        ,ctl06_valor
+        ,ctl06_id_tipo_integrador
+        ,ctl06_id_modulo
+        )
+        values
+        <foreach item="item" collection="loteLst" separator=",">
+         (
+             #{item.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.filial.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.empresa.id,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+            ,#{item.serie}
+            ,now()
+            ,#{item.dataMovimento}
+            ,#{item.tipoOperacao.id}
+            ,#{item.valor}
+            ,#{item.tipoIntegrador.id}
+            ,#{item.modulo.id}
+        )
+        </foreach>
+        on conflict (ctl06_id_filial,ctl06_id_empresa,ctl06_dt_movimento,ctl06_serie,ctl06_id_tipo_integrador,ctl06_id_modulo)
+        do update set ctl06_valor = EXCLUDED.ctl06_valor ,
+                      ctl06_dt = now()
+
+    </insert>
+
+</mapper>

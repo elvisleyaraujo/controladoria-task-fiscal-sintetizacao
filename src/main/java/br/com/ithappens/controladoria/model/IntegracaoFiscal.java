@@ -1,10 +1,7 @@
 package br.com.ithappens.controladoria.model;
 
 import br.com.ithappens.controladoria.model.enums.TipoOperacao;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode (of = "id")
-public class LoteSinteticoSerie {
+public class IntegracaoFiscal {
 
     private UUID id;
     private Filial filial;
@@ -26,6 +23,5 @@ public class LoteSinteticoSerie {
     private double valor;
     private TipoIntegrador tipoIntegrador;
     private Modulo modulo;
-    private UUID revisao;
 
 }

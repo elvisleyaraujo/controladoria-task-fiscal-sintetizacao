@@ -14,8 +14,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-public class ValidacaoSinteticoSerie {
+@EqualsAndHashCode(of = {"filial", "empresa", "serie", "dataMovimento", "tipoOperacao", "tipoIntegrador"})
+public class ValidacaoFiscal {
 
     private UUID id;
     private Filial filial;
@@ -26,4 +26,16 @@ public class ValidacaoSinteticoSerie {
     private TipoOperacao tipoOperacao;
     private TipoIntegrador tipoIntegrador;
     private StatusValidacao status;
+
+    public ValidacaoFiscal(IntegracaoFiscal integracaoFiscal){
+        this.id = UUID.randomUUID();
+        this.filial = integracaoFiscal.getFilial();
+        this.empresa = integracaoFiscal.getEmpresa();
+        this.serie = integracaoFiscal.getSerie();
+        this.dataMovimento = integracaoFiscal.getDataMovimento();
+        this.dataIntegracao = LocalDateTime.now();
+        this.tipoOperacao = integracaoFiscal.getTipoOperacao();
+        this.tipoIntegrador = integracaoFiscal.getTipoIntegrador();
+    }
+
 }
