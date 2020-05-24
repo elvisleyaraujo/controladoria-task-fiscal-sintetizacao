@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-public class BaseImportacao {
+public abstract class BaseImportacao {
 
     @Autowired
     private FilialMapper filialMapper;
@@ -27,8 +27,5 @@ public class BaseImportacao {
         executions.forEach(CompletableFuture::join);
     };
 
-    public CompletableFuture<Void> findAndSave(Filial filial, LocalDate dataMovimento){
-        return CompletableFuture.completedFuture(null);
-    };
-
+    public abstract CompletableFuture<Void> findAndSave(Filial filial, LocalDate dataMovimento);
 }

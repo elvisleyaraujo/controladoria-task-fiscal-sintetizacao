@@ -40,7 +40,6 @@ public class ProcessoNfceService extends BaseImportacao {
         return CompletableFuture.completedFuture(null);
     };
 
-    //@Async
     public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
@@ -50,7 +49,8 @@ public class ProcessoNfceService extends BaseImportacao {
             RETURN = integracaoFiscalMapper.insertIntegracaoFiscal(loteLst);
         }
 
-        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
+        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFCE: MODULO ESTOQUE-ATUALIZADO: {}",
+                filial.getEmpresa().getCodigo(),
                 filial.getCodigo(),
                 dataMovimento,
                 loteLst.size());
@@ -58,7 +58,6 @@ public class ProcessoNfceService extends BaseImportacao {
         return RETURN;
     }
 
-    //@Async
     public boolean importacaoFiscal(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
@@ -76,12 +75,10 @@ public class ProcessoNfceService extends BaseImportacao {
         return RETURN;
     }
 
-    //@Async
     public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
         return false;
     }
 
-    //@Async
     public boolean importacaoPDV(Filial filial, LocalDate dataMovimento){
         return false;
     }
