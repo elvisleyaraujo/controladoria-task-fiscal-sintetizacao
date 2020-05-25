@@ -11,8 +11,29 @@
         <result property="serie" column="ctl06a_serie" />
         <result property="dataIntegracao" column="ctl06a_dt"/>
         <result property="tipoOperacao" column="ctl06a_tip_oper" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.TipoOperacaoTypeHandler" />
+        <result property="status" column="ctl06a_status" typeHandler="br.com.ithappens.controladoria.mapper.typehandler.StatusValidacaoTypeHandler" />
         <result property="tipoIntegrador.id" column="ctl06a_id_tipo_integrador" />
     </resultMap>
+
+    <select id="recuperarValidacaoFiscalPeriodo" resultMap="mapValidacaoFiscal">
+        select
+        	 ctl06a_id
+        	,ctl06a_id_filial
+        	,ctl06a_id_empresa
+        	,ctl06a_dt_movimento
+        	,ctl06a_serie
+        	,ctl06a_dt
+        	,ctl06a_tip_oper
+        	,ctl06a_id_tipo_integrador
+        	,ctl06a_status
+        from controladoria.ctl06a_validacao_fiscal
+        where ctl06a_id_filial    = #{idFilial,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
+          and ctl06a_id_tipo_integrador  = #{idIntegrador}
+          and ctl06a_dt_movimento between #{dataIni} and #{dataFim}
+          <if test="status.id>0">
+          and ctl06a_status = #{status.id}
+          </if>
+    </select>
 
     <select id="recuperarValidacaoFiscal" resultMap="mapValidacaoFiscal">
         select
@@ -24,10 +45,14 @@
         	,ctl06a_dt
         	,ctl06a_tip_oper
         	,ctl06a_id_tipo_integrador
+        	,ctl06a_status
         from controladoria.ctl06a_validacao_fiscal
         where ctl06a_id_filial    = #{idFilial,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
           and ctl06a_dt_movimento = #{dataMovimento}
           and ctl06a_id_tipo_integrador  = #{idIntegrador}
+          <if test="serie!=''" >
+              and ctl06a_serie = #{serie}
+          </if>
     </select>
 
     <insert id="insertValidacaoFiscal">

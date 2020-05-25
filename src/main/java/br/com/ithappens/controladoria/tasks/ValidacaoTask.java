@@ -22,11 +22,16 @@ public class ValidacaoTask implements ITask {
         String argEmpresa       = args.get("empresa");
         String argFilial        = args.get("filial");
         String argDataMovimento = args.get("datamovimento");
+        String argRevalidar     = args.get("revalidar");
 
         LocalDate dataMovimento;
         if (argDataMovimento.isEmpty())  { dataMovimento = LocalDate.now().minusDays(2); } else {
             dataMovimento = LocalDate.parse(argDataMovimento, DateTimeFormatter.ofPattern("yyyy-MM-dd")); }
 
-        validacaoFiscalService.startValidacaoFiscal(argEmpresa, argFilial, dataMovimento);
+        boolean revalida = Boolean.parseBoolean(argRevalidar);
+
+        validacaoFiscalService.startValidacao(argEmpresa, argFilial, dataMovimento);
+        if (revalida) validacaoFiscalService.startReValidacao(argEmpresa, argFilial, dataMovimento);
+
     }
 }

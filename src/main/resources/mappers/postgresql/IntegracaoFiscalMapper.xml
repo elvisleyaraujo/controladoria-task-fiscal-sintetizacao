@@ -32,6 +32,9 @@
         where ctl06_id_filial    = #{idFilial,javaType=java.util.UUID,jdbcType=OTHER,typeHandler=br.com.ithappens.controladoria.mapper.typehandler.UUIDTypeHandler}
           and ctl06_dt_movimento = #{dataMovimento}
           and ctl06_id_tipo_integrador  = #{idIntegrador}
+          <if test="serie!=''" >
+            and ctl06_serie = #{serie}
+          </if>
     </select>
 
     <insert id="insertIntegracaoFiscal">

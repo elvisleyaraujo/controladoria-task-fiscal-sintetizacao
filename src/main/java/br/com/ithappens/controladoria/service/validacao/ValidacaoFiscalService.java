@@ -5,13 +5,14 @@ import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
 import br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper;
 import br.com.ithappens.controladoria.mapper.postgresql.ValidacaoFiscalMapper;
 import br.com.ithappens.controladoria.model.*;
+import br.com.ithappens.controladoria.model.constants.Constantes;
 import br.com.ithappens.controladoria.model.enums.StatusValidacao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,9 +20,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ValidacaoFiscalService {
-
-    private final int PROCESSONFE  = 01;
-    private final int PROCESSONFCE = 02;
 
     @Autowired
     private ValidacaoFiscalMapper validacaoFiscalMapper;
@@ -31,30 +29,64 @@ public class ValidacaoFiscalService {
     private FilialMapper filialMapper;
     @Autowired
     private ConfiguracaoIntegradorMapper configuracaoIntegradorMapper;
+    private int pro;
 
-    public void startValidacaoFiscal(String codigoEmpresa, String codigoFilial, LocalDate dataMovimento){
+    public void startValidacao(String codigoEmpresa, String codigoFilial, LocalDate dataMovimento){
         List<Filial> listFilial = filialMapper.recuperarFilial(codigoEmpresa, codigoFilial);
         listFilial.forEach( f -> {
-            validacaoProcesso(PROCESSONFCE, f, dataMovimento);
-            validacaoProcesso(PROCESSONFE, f, dataMovimento);
+            validacaoProcesso(Constantes.INTEGRACAO_NFCE, f, dataMovimento);
+            validacaoProcesso(Constantes.INTEGRACAO_NFE, f, dataMovimento);
         });
     }
 
-    public void validacaoProcesso(int processo, Filial filial, LocalDate dataMovimento){
+    public void startReValidacao(String codigoEmpresa, String codigoFilial, LocalDate mesMovimento){
+        List<Filial> listFilial = filialMapper.recuperarFilial(codigoEmpresa, codigoFilial);
 
-        List<ValidacaoFiscal> validacaoFiscalList = validacaoFiscalMapper.recuperarValidacaoFiscal(filial.getId(), dataMovimento, processo);
+        listFilial.forEach( f -> {
+            revalidacaoProcesso(Constantes.INTEGRACAO_NFCE, f, mesMovimento);
+            revalidacaoProcesso(Constantes.INTEGRACAO_NFE, f, mesMovimento);
+        });
+    }
+
+    private void revalidacaoProcesso(int processo, Filial filial, LocalDate dataMovimento){
+
+        LocalDate datIni = dataMovimento.withDayOfMonth(1);
+        LocalDate datFim = dataMovimento.withDayOfMonth(dataMovimento.lengthOfMonth());
+
+        List<ValidacaoFiscal> validacaoFiscalList = validacaoFiscalMapper.recuperarValidacaoFiscalPeriodo(
+                filial.getId(),
+                processo,
+                datIni,
+                datFim,
+                StatusValidacao.INCONSISTENTE
+                );
+
+        Map<String, LocalDate> revalidacaoList = validacaoFiscalList.stream().
+                collect(Collectors.toMap(ValidacaoFiscal::getSerie, ValidacaoFiscal::getDataMovimento));
+
+        revalidacaoList.entrySet().forEach( map -> validacaoProcesso(processo, filial, map.getValue(), map.getKey()));
+    }
+
+    private void validacaoProcesso(int processo, Filial filial, LocalDate dataMovimento){
+        this.validacaoProcesso(processo, filial, dataMovimento, "");
+    }
+
+    private void validacaoProcesso(int processo, Filial filial, LocalDate dataMovimento, String serie){
+
+        List<ValidacaoFiscal> validacaoFiscalList = validacaoFiscalMapper.recuperarValidacaoFiscal(filial.getId(), dataMovimento, processo, serie);
         validacaoFiscalList.forEach(p -> p.setStatus(StatusValidacao.CONSISTENTE));
 
         List<ConfiguracaoIntegrador> configuracaoIntegradorList = configuracaoIntegradorMapper.recuperarConfiguracaoIntegrador(processo);
-        List<IntegracaoFiscal> integracaoFiscalList = integracaoFiscalMapper.recuperarIntegracaoFiscal(filial.getId(), dataMovimento, processo);
+        List<IntegracaoFiscal> integracaoFiscalList = integracaoFiscalMapper.recuperarIntegracaoFiscal(filial.getId(), dataMovimento, processo, serie);
 
         Map<String, List<IntegracaoFiscal>> mapIntegracaoFiscal;
         mapIntegracaoFiscal = integracaoFiscalList.stream().collect(Collectors.groupingBy(IntegracaoFiscal::getSerie));
 
-        log.info("VALIDAÇÃO PROCESSO {}, FILIAL {}, DATA {}, DADOS {}",
-                (processo==1) ? "NFE" : "NFCE",
+        log.info("VALIDAÇÃO PROCESSO {}, FILIAL {}, DATA {}, SERIE {},  DADOS {}",
+                (processo ==Constantes.INTEGRACAO_NFE) ? "NFE" : "NFCE",
                 filial.getCodigo(),
                 dataMovimento,
+                serie,
                 integracaoFiscalList.size());
 
         //Mapeamento das series de um periodo para validação
@@ -82,7 +114,7 @@ public class ValidacaoFiscalService {
         saveValidacaoFiscal(validacaoFiscalList);
     }
 
-    public boolean saveValidacaoFiscal(List<ValidacaoFiscal> validacaoFiscalList){
+    private boolean saveValidacaoFiscal(List<ValidacaoFiscal> validacaoFiscalList){
         if (!validacaoFiscalList.isEmpty())
             return validacaoFiscalMapper.insertValidacaoFiscal(validacaoFiscalList);
         else

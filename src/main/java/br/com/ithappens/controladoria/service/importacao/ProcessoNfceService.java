@@ -2,6 +2,7 @@ package br.com.ithappens.controladoria.service.importacao;
 
 import br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
+import br.com.ithappens.controladoria.model.constants.Constantes;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.IntegracaoFiscal;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +19,6 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 public class ProcessoNfceService extends BaseImportacao {
-
-    private static final int PDV=1;
-    private static final int FISCAL=2;
-    private static final int ESTOQUE=3;
-    private static final int FINANCEIRO=4;
 
     @Autowired
     private ProcessoNfceMapper processoNfceMapper;
@@ -43,7 +39,7 @@ public class ProcessoNfceService extends BaseImportacao {
     public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
-        List<IntegracaoFiscal> loteLst = recuperar(ESTOQUE, filial, dataMovimento);
+        List<IntegracaoFiscal> loteLst = recuperar(Constantes.MODULO_ESTOQUE, filial, dataMovimento);
 
         if (!loteLst.isEmpty()) {
             RETURN = integracaoFiscalMapper.insertIntegracaoFiscal(loteLst);
@@ -61,7 +57,7 @@ public class ProcessoNfceService extends BaseImportacao {
     public boolean importacaoFiscal(Filial filial, LocalDate dataMovimento){
         boolean RETURN = false;
 
-        List<IntegracaoFiscal> loteLst = recuperar(FISCAL, filial, dataMovimento);
+        List<IntegracaoFiscal> loteLst = recuperar(Constantes.MODULO_FISCAL, filial, dataMovimento);
 
         if (!loteLst.isEmpty()) {
             RETURN = integracaoFiscalMapper.insertIntegracaoFiscal(loteLst);
@@ -86,9 +82,9 @@ public class ProcessoNfceService extends BaseImportacao {
     private List<IntegracaoFiscal> recuperar(int modulo, Filial filial, LocalDate dataMovimento){
         List<IntegracaoFiscal> loteLst = new ArrayList<IntegracaoFiscal>();
 
-        if (modulo==ESTOQUE){
+        if (modulo==Constantes.MODULO_ESTOQUE){
             loteLst = processoNfceMapper.recuperarEstoque(filial.getCodigo(), dataMovimento);
-        } else if (modulo==FISCAL){
+        } else if (modulo==Constantes.MODULO_FISCAL){
             loteLst = processoNfceMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
         }
 

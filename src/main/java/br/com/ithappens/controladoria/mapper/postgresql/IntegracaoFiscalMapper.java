@@ -15,7 +15,8 @@ public interface IntegracaoFiscalMapper {
 
     List<IntegracaoFiscal> recuperarIntegracaoFiscal(@Param("idFilial") UUID idFilial,
                                                      @Param("dataMovimento")LocalDate dataMovimento,
-                                                     @Param("idIntegrador") int idIntegrador);
+                                                     @Param("idIntegrador") int idIntegrador,
+                                                     @Param("serie") String serie);
 
     Boolean insertIntegracaoFiscal(@Param("loteLst") List<IntegracaoFiscal> loteLst);
 
