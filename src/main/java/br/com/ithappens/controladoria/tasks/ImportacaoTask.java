@@ -14,10 +14,14 @@ import java.time.format.DateTimeFormatter;
       description="Importação dos dados do processo de Nfc-e")
 public class ImportacaoTask implements ITask {
 
-    @Autowired
-    private ProcessoNfceService nfceService;
-    @Autowired
-    private ProcessoNfeService nfeService;
+    private final ProcessoNfceService nfceService;
+    private final ProcessoNfeService nfeService;
+
+    public ImportacaoTask(ProcessoNfceService nfceService,
+            ProcessoNfeService nfeService) {
+        this.nfceService = nfceService;
+        this.nfeService = nfeService;
+    }
 
     @Override
     public void run(Arguments args) {
@@ -34,6 +38,10 @@ public class ImportacaoTask implements ITask {
         nfceService.startImportacao(argEmpresa, argFilial, dataMovimento);
         //PROCESSO DE NFE
         nfeService.startImportacao(argEmpresa, argFilial, dataMovimento);
+
+
     }
+
+
 
 }

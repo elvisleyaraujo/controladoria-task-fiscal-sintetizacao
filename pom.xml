@@ -115,6 +115,13 @@
             <version>17.0.0</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jeasy/easy-random -->
+<!--        <dependency>-->
+<!--            <groupId>org.jeasy</groupId>-->
+<!--            <artifactId>easy-random</artifactId>-->
+<!--            <version>4.2.0</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>
