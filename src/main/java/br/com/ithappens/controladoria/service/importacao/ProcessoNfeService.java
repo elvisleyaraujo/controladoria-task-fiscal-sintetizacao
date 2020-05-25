@@ -1,5 +1,6 @@
 package br.com.ithappens.controladoria.service.importacao;
 
+import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
 import br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper;
 import br.com.ithappens.controladoria.model.Filial;
@@ -18,17 +19,23 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class ProcessoNfeService extends BaseImportacao {
 
-    @Autowired
-    private ProcessoNfeMapper processoNfeMapper;
-    @Autowired
-    private IntegracaoFiscalMapper integracaoFiscalMapper;
+    private final ProcessoNfeMapper processoNfeMapper;
+    private final IntegracaoFiscalMapper integracaoFiscalMapper;
+
+    public ProcessoNfeService(ProcessoNfeMapper processoNfeMapper,
+                              IntegracaoFiscalMapper integracaoFiscalMapper,
+                              FilialMapper filialMapper) {
+        this.processoNfeMapper = processoNfeMapper;
+        this.integracaoFiscalMapper = integracaoFiscalMapper;
+        this.filialMapper = filialMapper;
+    }
 
     @Async
     @Override
     public CompletableFuture<Void> findAndSave(Filial filial, LocalDate dataMovimento){
         importacaoFiscal(filial, dataMovimento);
-        importacaoEstoque(filial, dataMovimento);
-        importacaoFinanceiro(filial, dataMovimento);
+        //importacaoEstoque(filial, dataMovimento);
+        //importacaoFinanceiro(filial, dataMovimento);
 
         return CompletableFuture.completedFuture(null);
     };
@@ -56,13 +63,13 @@ public class ProcessoNfeService extends BaseImportacao {
         return RETURN;
     }
 
-    //@Async
-    public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
-        return false;
-    }
-
-    //@Async
-    public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
-        return false;
-    }
+//    //@Async
+//    public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
+//        return false;
+//    }
+//
+//    //@Async
+//    public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
+//        return false;
+//    }
 }

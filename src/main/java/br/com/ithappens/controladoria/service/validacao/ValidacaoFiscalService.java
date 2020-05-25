@@ -9,27 +9,31 @@ import br.com.ithappens.controladoria.model.constants.Constantes;
 import br.com.ithappens.controladoria.model.enums.StatusValidacao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class ValidacaoFiscalService {
 
-    @Autowired
-    private ValidacaoFiscalMapper validacaoFiscalMapper;
-    @Autowired
-    private IntegracaoFiscalMapper integracaoFiscalMapper;
-    @Autowired
-    private FilialMapper filialMapper;
-    @Autowired
-    private ConfiguracaoIntegradorMapper configuracaoIntegradorMapper;
-    private int pro;
+    private final ValidacaoFiscalMapper validacaoFiscalMapper;
+    private final IntegracaoFiscalMapper integracaoFiscalMapper;
+    private final FilialMapper filialMapper;
+    private final ConfiguracaoIntegradorMapper configuracaoIntegradorMapper;
+
+    public ValidacaoFiscalService(ValidacaoFiscalMapper validacaoFiscalMapper, IntegracaoFiscalMapper integracaoFiscalMapper, FilialMapper filialMapper, ConfiguracaoIntegradorMapper configuracaoIntegradorMapper) {
+        this.validacaoFiscalMapper = validacaoFiscalMapper;
+        this.integracaoFiscalMapper = integracaoFiscalMapper;
+        this.filialMapper = filialMapper;
+        this.configuracaoIntegradorMapper = configuracaoIntegradorMapper;
+    }
 
     public void startValidacao(String codigoEmpresa, String codigoFilial, LocalDate dataMovimento){
         List<Filial> listFilial = filialMapper.recuperarFilial(codigoEmpresa, codigoFilial);

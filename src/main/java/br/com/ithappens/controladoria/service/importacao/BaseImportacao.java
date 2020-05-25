@@ -13,8 +13,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public abstract class BaseImportacao {
 
-    @Autowired
-    private FilialMapper filialMapper;
+    protected FilialMapper filialMapper;
 
     public void startImportacao(String codigoEmpresa, String codigoFilial, LocalDate dataMovimento){
         List<Filial> filialList = filialMapper.recuperarFilial(codigoEmpresa, codigoFilial);

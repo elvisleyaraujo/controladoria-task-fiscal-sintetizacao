@@ -1,5 +1,6 @@
 package br.com.ithappens.controladoria.service.importacao;
 
+import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
 import br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
 import br.com.ithappens.controladoria.model.constants.Constantes;
@@ -20,18 +21,25 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class ProcessoNfceService extends BaseImportacao {
 
-    @Autowired
-    private ProcessoNfceMapper processoNfceMapper;
-    @Autowired
-    private IntegracaoFiscalMapper integracaoFiscalMapper;
+    private final ProcessoNfceMapper processoNfceMapper;
+    private final IntegracaoFiscalMapper integracaoFiscalMapper;
+
+    public ProcessoNfceService(
+            ProcessoNfceMapper processoNfceMapper,
+            IntegracaoFiscalMapper integracaoFiscalMapper,
+            FilialMapper filialMapper) {
+        this.processoNfceMapper = processoNfceMapper;
+        this.integracaoFiscalMapper = integracaoFiscalMapper;
+        this.filialMapper = filialMapper;
+    }
 
     @Async
     @Override
     public CompletableFuture<Void> findAndSave(Filial filial, LocalDate dataMovimento){
         importacaoEstoque(filial, dataMovimento);
         importacaoFiscal(filial, dataMovimento);
-        //importacaoFinanceiro(filial, dataMovimento);
-        //importacaoPDV(filial, dataMovimento);
+        importacaoFinanceiro(filial, dataMovimento);
+        importacaoPDV(filial, dataMovimento);
 
         return CompletableFuture.completedFuture(null);
     };
