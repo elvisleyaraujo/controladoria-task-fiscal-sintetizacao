@@ -40,12 +40,13 @@ public class ProcessoNfceServiceTest {
         filial.setCodigo("7");
         filial.setEmpresa(empresa);
 
+        Mockito.when( integracaoFiscalMapper.insertIntegracaoFiscal(integracaoFiscalList)).thenReturn(true);
+
         processoNfceService = new ProcessoNfceService(processoNfceMapper,integracaoFiscalMapper,filialMapper);
     }
 
     @Test
     public void testImportarEstoqueSucesso(){
-        Mockito.when( integracaoFiscalMapper.insertIntegracaoFiscal(integracaoFiscalList)).thenReturn(true);
         Mockito.when( processoNfceMapper.recuperarEstoque(ArgumentMatchers.anyString(),ArgumentMatchers.any(LocalDate.class)) ).thenReturn(integracaoFiscalList);
 
         Assertions.assertThat( processoNfceService.importacaoEstoque( filial, LocalDate.now() ) ).isTrue();
@@ -53,7 +54,6 @@ public class ProcessoNfceServiceTest {
 
     @Test
     public void testImportarFiscalSucesso(){
-        Mockito.when( integracaoFiscalMapper.insertIntegracaoFiscal(integracaoFiscalList)).thenReturn(true);
         Mockito.when( processoNfceMapper.recuperarFiscal(ArgumentMatchers.anyString(),ArgumentMatchers.any(LocalDate.class)) ).thenReturn(integracaoFiscalList);
 
         Assertions.assertThat( processoNfceService.importacaoFiscal( filial, LocalDate.now() ) ).isTrue();
