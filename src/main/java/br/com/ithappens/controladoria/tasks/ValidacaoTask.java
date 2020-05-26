@@ -13,8 +13,11 @@ import java.time.format.DateTimeFormatter;
       description="Validação dos dados fiscais")
 public class ValidacaoTask implements ITask {
 
-    @Autowired
-    private ValidacaoFiscalService validacaoFiscalService;
+    private final ValidacaoFiscalService validacaoFiscalService;
+
+    public ValidacaoTask(ValidacaoFiscalService validacaoFiscalService) {
+        this.validacaoFiscalService = validacaoFiscalService;
+    }
 
     @Override
     public void run(Arguments args) {
