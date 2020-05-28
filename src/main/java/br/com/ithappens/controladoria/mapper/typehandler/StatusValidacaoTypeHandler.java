@@ -1,10 +1,8 @@
 package br.com.ithappens.controladoria.mapper.typehandler;
 
 import br.com.ithappens.controladoria.model.enums.StatusValidacao;
-import br.com.ithappens.controladoria.model.enums.TipoOperacao;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;

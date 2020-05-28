@@ -6,17 +6,18 @@ spring:
   profiles:
     active: dev
 ---
+
 spring:
   profiles: prod
 app:
   datasource:
     postgresql:
-      jdbcUrl: jdbc:postgresql://10.0.1.15:5432/contabil
-      username: gmcont
-      password: BmQev2UYvkOj
+      jdbcUrl: jdbc:postgresql://192.168.6.87:5432/contabil
+      username: gmcontroladoria
+      password: BauSNTaRbBZ56L
       driverClassName: org.postgresql.Driver
     sqlserver:
-      jdbcUrl: jdbc:sqlserver://10.54.0.253:1433;database=CADASTRO
+      jdbcUrl: jdbc:sqlserver://192.168.6.3:1433;database=CADASTRO
       username: gmcore
       password: ipase2013!
 ithappens:

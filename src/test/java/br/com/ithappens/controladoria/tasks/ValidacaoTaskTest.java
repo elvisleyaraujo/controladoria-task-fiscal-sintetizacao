@@ -1,7 +1,5 @@
 package br.com.ithappens.controladoria.tasks;
 
-import br.com.ithappens.controladoria.service.importacao.ProcessoNfceService;
-import br.com.ithappens.controladoria.service.importacao.ProcessoNfeService;
 import br.com.ithappens.controladoria.service.validacao.ValidacaoFiscalService;
 import br.com.ithappens.lib.task.model.Arguments;
 import br.com.ithappens.lib.task.service.task.ITask;
@@ -24,7 +22,6 @@ public class ValidacaoTaskTest {
     @Before
     public void before(){
         validacaoFiscalService = mock( ValidacaoFiscalService.class );
-
         validacaoTask = new ValidacaoTask(validacaoFiscalService);
     }
 
@@ -38,7 +35,7 @@ public class ValidacaoTaskTest {
 
         validacaoTask.run(args);
 
-        Mockito.verify(validacaoFiscalService, Mockito.times(1)).startReValidacao(ArgumentMatchers.anyString(),
+        Mockito.verify(validacaoFiscalService, Mockito.times(1)).startValidacao(ArgumentMatchers.anyString(),
                 ArgumentMatchers.anyString(),
                 ArgumentMatchers.any(LocalDate.class));
     }

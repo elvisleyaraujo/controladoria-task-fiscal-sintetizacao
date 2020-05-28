@@ -5,12 +5,12 @@ import br.com.ithappens.controladoria.service.importacao.ProcessoNfeService;
 import br.com.ithappens.lib.task.annotation.Task;
 import br.com.ithappens.lib.task.model.Arguments;
 import br.com.ithappens.lib.task.service.task.ITask;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Task(name = "integracao-dados-fiscais",
+      //cron = "0 4 * * *",
       description="Importação dos dados do processo de Nfc-e")
 public class ImportacaoTask implements ITask {
 

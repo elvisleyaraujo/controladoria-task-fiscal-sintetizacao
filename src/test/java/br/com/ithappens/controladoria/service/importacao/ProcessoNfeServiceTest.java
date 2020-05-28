@@ -6,8 +6,6 @@ import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper;
 import br.com.ithappens.controladoria.model.Empresa;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.IntegracaoFiscal;
-import br.com.ithappens.controladoria.service.importacao.ProcessoNfceService;
-import br.com.ithappens.controladoria.service.importacao.ProcessoNfeService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,12 +51,25 @@ public class ProcessoNfeServiceTest {
         Assertions.assertThat( processoNfeService.importacaoFiscal( filial, LocalDate.now() ) ).isTrue();
     }
 
+    @Test
+    public void testImportacaoFinanceiro(){
+        Mockito.when( integracaoFiscalMapper.insertIntegracaoFiscal(integracaoFiscalList)).thenReturn(true);
+        Mockito.when( processoNfeMapper.recuperarFinanceiro(ArgumentMatchers.anyString(),ArgumentMatchers.any(LocalDate.class)) ).thenReturn(integracaoFiscalList);
+
+        Assertions.assertThat( processoNfeService.importacaoFinanceiro( filial, LocalDate.now() ) ).isTrue();
+    }
+
+    @Test
+    public void testImportacaoEstoque(){
+        Mockito.when( integracaoFiscalMapper.insertIntegracaoFiscal(integracaoFiscalList)).thenReturn(true);
+        Mockito.when( processoNfeMapper.recuperarEstoque(ArgumentMatchers.anyString(),ArgumentMatchers.any(LocalDate.class)) ).thenReturn(integracaoFiscalList);
+
+        Assertions.assertThat( processoNfeService.importacaoEstoque( filial, LocalDate.now() ) ).isTrue();
+    }
 
     @Test
     public void testFindAndSave(){
-
         Assertions.assertThat( processoNfeService.findAndSave(filial, LocalDate.now()) ).isCompleted();
-
     }
 
 

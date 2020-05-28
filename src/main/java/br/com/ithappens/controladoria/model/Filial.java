@@ -1,6 +1,7 @@
 package br.com.ithappens.controladoria.model;
 
 import lombok.*;
+
 import java.util.UUID;
 
 @Data

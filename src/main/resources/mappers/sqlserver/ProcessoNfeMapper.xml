@@ -13,7 +13,6 @@
         <result column="valor" property="valor" />
     </resultMap>
 
-
     <select id="recuperarFiscal" resultMap="mapRecuperar">
         select
            ct10_id_filial                                   as idfilial,
@@ -34,14 +33,58 @@
         inner join contabil.dbo.ct11_itens_nota_fiscal with (nolock) on ct11_id_nota_fiscal = ct10_id
         inner join contabil..ct29_cfop with (nolock) on ct11_id_cfop = ct29_classificacao
         where ct10_id_filial = #{codigoFilial}
-          and convert(date,ct10_dt_emissao) = #{datamovimento}
+          and convert(date,ct10_dt_emissao) = #{dataMovimento}
           and ct10_status in (2)
           and ct10_tipo_operacao>0
           and ct10_modelo_documento = '55'
         group by ct10_id_filial,
                  ct10_serie_documento,
                  ct10_modelo_documento,
-                 try_convert(date,ct10_dt_emissao) ;
+                 try_convert(date,ct10_dt_emissao)
+    </select>
+
+    <select id="recuperarFinanceiro" resultMap="mapRecuperar">
+        select
+        	fn01_id_filial                                   as idfilial,
+            try_convert(date,fn01_dt_lancamento)             as datamovimento,
+            cd23_serie_nfe                                   as serie,
+            02                                               as tipoper,
+            01                                               as idintegrador, --Processo Nfe
+            04                                               as idmodulo,     --FINANCEIRO
+            sum(fn01_valor_titulo)                           as valor
+        from financeiro.dbo.fn01_lancamento_contas_receber fn with(nolock)
+        inner join FINANCEIRO.dbo.FN30_TIPO_LANCAMENTO  with(nolock) on FN30_ID  = fn.FN01_ID_TIPO_LANCAMENTO
+        inner join CADASTRO.dbo.CD23_FILIAL  on CD23_ID  = fn01_id_filial
+        where fn01_id_filial = #{codigoFilial}
+          and try_convert(date,fn01_dt_lancamento) = #{dataMovimento}
+          and fn30_id in (36,37,41,45,50,66) --
+        group by
+          try_convert(date,fn01_dt_lancamento),
+          fn01_id_filial,
+          cd23_serie_nfe
+    </select>
+
+    <select id="recuperarEstoque" resultMap="mapRecuperar">
+        select
+        	es12_filial                                                as idfilial,
+            convert(date,es12_dt_digitacao)                            as datamovimento,
+            cd23_serie_nfe                                             as serie,
+            02                                                         as tipoper,
+            01                                                         as idintegrador, --Processo Nfe
+            03                                                         as idmodulo,     --ESTOQUE
+            sum(es14_valor_total_item - isnull(es14_valor_desconto,0)) as valor
+        from estoque..es12_pedido with (nolock)
+        inner join cadastro..cd62_estoque_movimento with (nolock) on cd62_id = es12_tipo_movimento
+        													     and cd62_gera_fiscal = 1
+        inner join estoque..es14_item_pedido with (nolock) on es14_id_pedido = es12_id
+        												  and es14_status in('a','p')
+        inner join estoque..es03_movimentacao with (nolock) on es03_id_item_pedido = es14_id
+        inner join cadastro..cd23_filial with (nolock) on cd23_id = es12_filial
+        where es12_filial = #{codigoFilial}
+          and convert(date,es12_dt_digitacao) = #{dataMovimento}
+        group by es12_filial,
+                 convert(date,es12_dt_digitacao),
+                 cd23_serie_nfe
     </select>
 
 

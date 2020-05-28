@@ -6,7 +6,6 @@ import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfeMapper;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.IntegracaoFiscal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +33,8 @@ public class ProcessoNfeService extends BaseImportacao {
     @Override
     public CompletableFuture<Void> findAndSave(Filial filial, LocalDate dataMovimento){
         importacaoFiscal(filial, dataMovimento);
-        //importacaoEstoque(filial, dataMovimento);
-        //importacaoFinanceiro(filial, dataMovimento);
+        importacaoEstoque(filial, dataMovimento);
+        importacaoFinanceiro(filial, dataMovimento);
 
         return CompletableFuture.completedFuture(null);
     };
@@ -45,6 +44,52 @@ public class ProcessoNfeService extends BaseImportacao {
         boolean RETURN = false;
 
         List<IntegracaoFiscal> loteLst = processoNfeMapper.recuperarFiscal(filial.getCodigo(), dataMovimento);
+
+        RETURN = importacao(filial, loteLst);
+
+        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFE: MODULO FISCAL-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
+                filial.getCodigo(),
+                dataMovimento,
+                loteLst.size());
+
+        return RETURN;
+    }
+
+    //@Async
+    public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
+        boolean RETURN = false;
+
+        List<IntegracaoFiscal> loteLst = processoNfeMapper.recuperarFinanceiro(filial.getCodigo(), dataMovimento);
+
+        RETURN = importacao(filial, loteLst);
+
+        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFE: MODULO FINANCEIRO-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
+                filial.getCodigo(),
+                dataMovimento,
+                loteLst.size());
+
+        return RETURN;
+    }
+//
+//    //@Async
+    public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
+        boolean RETURN = false;
+
+        List<IntegracaoFiscal> loteLst = processoNfeMapper.recuperarEstoque(filial.getCodigo(), dataMovimento);
+
+        RETURN = importacao(filial, loteLst);
+
+        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFE: MODULO ESTOQUE-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
+                filial.getCodigo(),
+                dataMovimento,
+                loteLst.size());
+
+        return RETURN;
+    }
+
+    public boolean importacao(Filial filial, List<IntegracaoFiscal> loteLst){
+        boolean RETURN = false;
+
         loteLst.forEach(loteItem -> {
             loteItem.setEmpresa(filial.getEmpresa());
             loteItem.setFilial(filial);
@@ -55,21 +100,6 @@ public class ProcessoNfeService extends BaseImportacao {
             RETURN = integracaoFiscalMapper.insertIntegracaoFiscal(loteLst);
         }
 
-        log.info("EMPRESA: {} FILIAL: {} DATA: {} PROCESSO NFE: MODULO FISCAL-ATUALIZADO: {}", filial.getEmpresa().getCodigo(),
-                filial.getCodigo(),
-                dataMovimento,
-                loteLst.size());
-
         return RETURN;
     }
-
-//    //@Async
-//    public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
-//        return false;
-//    }
-//
-//    //@Async
-//    public boolean importacaoEstoque(Filial filial, LocalDate dataMovimento){
-//        return false;
-//    }
 }

@@ -13,7 +13,11 @@ import java.util.List;
 public interface ProcessoNfeMapper {
 
     List<IntegracaoFiscal> recuperarFiscal(@Param("codigoFilial") String codigoFilial,
-                                           @Param("datamovimento") LocalDate datamovimento);
+                                           @Param("dataMovimento") LocalDate dataMovimento);
 
+    List<IntegracaoFiscal> recuperarFinanceiro(@Param("codigoFilial") String codigoFilial,
+                                               @Param("dataMovimento") LocalDate dataMovimento);
 
+    List<IntegracaoFiscal> recuperarEstoque(@Param("codigoFilial") String codigoFilial,
+                                            @Param("dataMovimento") LocalDate dataMovimento);
 }

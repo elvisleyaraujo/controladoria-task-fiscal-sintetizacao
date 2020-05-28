@@ -4,12 +4,12 @@ import br.com.ithappens.controladoria.service.validacao.ValidacaoFiscalService;
 import br.com.ithappens.lib.task.annotation.Task;
 import br.com.ithappens.lib.task.model.Arguments;
 import br.com.ithappens.lib.task.service.task.ITask;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Task(name = "validacao-dados-fiscais",
+      //cron = "0 4 * * *",
       description="Validação dos dados fiscais")
 public class ValidacaoTask implements ITask {
 
@@ -31,7 +31,8 @@ public class ValidacaoTask implements ITask {
         if (argDataMovimento.isEmpty())  { dataMovimento = LocalDate.now().minusDays(2); } else {
             dataMovimento = LocalDate.parse(argDataMovimento, DateTimeFormatter.ofPattern("yyyy-MM-dd")); }
 
-        boolean revalida = Boolean.parseBoolean(argRevalidar);
+        boolean revalida = false;
+        if (!argRevalidar.isEmpty()) Boolean.parseBoolean(argRevalidar);
 
         validacaoFiscalService.startValidacao(argEmpresa, argFilial, dataMovimento);
         if (revalida) validacaoFiscalService.startReValidacao(argEmpresa, argFilial, dataMovimento);

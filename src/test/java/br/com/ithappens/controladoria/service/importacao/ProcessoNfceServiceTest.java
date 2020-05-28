@@ -6,7 +6,6 @@ import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
 import br.com.ithappens.controladoria.model.Empresa;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.IntegracaoFiscal;
-import br.com.ithappens.controladoria.service.importacao.ProcessoNfceService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;

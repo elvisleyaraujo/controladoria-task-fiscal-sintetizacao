@@ -7,11 +7,9 @@ import br.com.ithappens.controladoria.mapper.postgresql.ValidacaoFiscalMapper;
 import br.com.ithappens.controladoria.model.*;
 import br.com.ithappens.controladoria.model.enums.StatusValidacao;
 import br.com.ithappens.controladoria.model.enums.TipoOperacao;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.time.LocalDate;

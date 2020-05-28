@@ -3,14 +3,17 @@ package br.com.ithappens.controladoria.service.importacao;
 import br.com.ithappens.controladoria.mapper.postgresql.FilialMapper;
 import br.com.ithappens.controladoria.mapper.postgresql.IntegracaoFiscalMapper;
 import br.com.ithappens.controladoria.mapper.sqlserver.ProcessoNfceMapper;
-import br.com.ithappens.controladoria.model.constants.Constantes;
 import br.com.ithappens.controladoria.model.Filial;
 import br.com.ithappens.controladoria.model.IntegracaoFiscal;
+import br.com.ithappens.controladoria.model.constants.Constantes;
+import br.com.ithappens.controladoria.model.dto.IntegracaoNfceDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ public class ProcessoNfceService extends BaseImportacao {
 
     private final ProcessoNfceMapper processoNfceMapper;
     private final IntegracaoFiscalMapper integracaoFiscalMapper;
+    private RestTemplate restTemplate;
 
     public ProcessoNfceService(
             ProcessoNfceMapper processoNfceMapper,
@@ -31,6 +35,7 @@ public class ProcessoNfceService extends BaseImportacao {
         this.processoNfceMapper = processoNfceMapper;
         this.integracaoFiscalMapper = integracaoFiscalMapper;
         this.filialMapper = filialMapper;
+        restTemplate = new RestTemplate();
     }
 
     @Async
@@ -79,7 +84,19 @@ public class ProcessoNfceService extends BaseImportacao {
         return RETURN;
     }
 
-    public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento){
+    public boolean importacaoFinanceiro(Filial filial, LocalDate dataMovimento) {
+
+//        String response = restTemplate.getForObject("http://10.0.2.65:8085/pdv/api/tesouraria/controladoria/enviarSintetizacaoDiaFilial?dataProcessamento=2020-05-02&idFilial=7", String.class);
+//        ObjectMapper MAPPER = new ObjectMapper();
+//        List<IntegracaoNfceDTO> persons = new ArrayList<>();
+//        try {
+//            persons = MAPPER.readValue(response, MAPPER.getTypeFactory().constructCollectionType(List.class, IntegracaoNfceDTO.class));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println(persons.toString());
+
         return false;
     }
 

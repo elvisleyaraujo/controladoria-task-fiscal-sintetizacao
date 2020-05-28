@@ -13,7 +13,7 @@
         <result column="valor" property="valor" />
     </resultMap>
 
-
+    <!-- Query fornececida pelo módulo fiscal-->
     <select id="recuperarFiscal" resultMap="mapRecuperar">
         select
            ct10_id_filial                                   as idfilial,
@@ -44,6 +44,7 @@
                  try_convert(date,ct10_dt_emissao) ;
     </select>
 
+    <!-- Query fornececida pelo módulo estoque-->
     <select id="recuperarEstoque" resultMap="mapRecuperar">
          select
                es12_filial                     as idfilial
